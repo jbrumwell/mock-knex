@@ -5,7 +5,7 @@ A mock knex adapter for simulating a database during testing
 
 ## Installation
 
-    $ npm install mock-db
+    $ npm install mock-knex --save-dev
 
 ## Mocking Knex
 
@@ -33,7 +33,7 @@ mockDB.knex.uninstall(); // reverts mocked adapters
 
 ## Tracker
 
-The tracker allows you catch and respond to queries that occur during testing, see tests for more
+The tracker allows you catch and respond to queries that occur during testing, see [Test](test/tracker.spec.js) for more
 examples.
 
 ### Example Usage with knex

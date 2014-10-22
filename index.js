@@ -10,7 +10,7 @@ function mockedKnex() {
   return client;
 }
 
-function mockKnex(names) {
+function install(names) {
   if (! knexClients) {
     knexClients = _.extend({}, knex.Clients);
   }
@@ -22,13 +22,17 @@ function mockKnex(names) {
       knex.Clients[ c ] = mockedKnex;
     });
   } else {
-    Object.keys(knex.Clients).forEach(mockKnex);
+    Object.keys(knex.Clients).forEach(install);
   }
 }
 
-function unmockKnex() {
+function uninstall() {
   knex.Clients = _.extend({}, knexClients);
   knexClients = void 0;
+}
+
+function use(knexPackage) {
+  knex = knexPackage;
 }
 
 function getTracker() {
@@ -38,7 +42,8 @@ function getTracker() {
 module.exports = {
   getTracker : getTracker,
   knex : {
-    install : mockKnex,
-    uninstall : unmockKnex
+    install : install,
+    uninstall : uninstall,
+    use : use
   }
 }

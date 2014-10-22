@@ -1,0 +1,35 @@
+{
+  "name": "mock-knex",
+  "version": "0.0.1",
+  "description": "a knex mock adapter for simulating a db during testing",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/lab/bin/lab -v -I __BluebirdErrorTypes__"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/colonyamerican/mock-knex.git"
+  },
+  "keywords": [
+    "knex",
+    "mock",
+    "bookshelf"
+  ],
+  "author": "Jason Brumwell",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/colonyamerican/mock-knex/issues"
+  },
+  "homepage": "https://github.com/colonyamerican/mock-knex",
+  "devDependencies": {
+    "bookshelf": "^0.7.7",
+    "jscs": "^1.7.3",
+    "jscs-jsdoc": "0.0.13",
+    "jshint": "^2.5.6",
+    "lab": "^4.7.0"
+  },
+  "dependencies": {
+    "knex": "^0.7.3",
+    "lodash": "^2.4.1"
+  }
+}

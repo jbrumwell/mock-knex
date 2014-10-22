@@ -1,0 +1,26 @@
+{
+  "camelcase"     : true,
+  "curly"         : true,
+  "eqeqeq"        : true,
+  "eqnull"        : true,
+  "freeze"        : true,
+  "funcscope"     : true,
+  "globals"   : {
+    "Promise"    : true
+  },
+  "globalstrict"  : true,
+  "immed"         : true,
+  "indent"        : 2,
+  "latedef"       : true,
+  "maxdepth"      : 3,
+  "maxstatements" : 26, // Need to turn this down someday
+  "maxlen"        : 100,
+  "newcap"        : true,
+  "node"          : true,
+  "noempty"       : true,
+  "nonew"         : true,
+  "quotmark"      : true,
+  "strict"        : true,
+  "trailing"      : true,
+  "unused"        : "vars"
+}

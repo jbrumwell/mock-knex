@@ -1,6 +1,6 @@
 {
   "name": "mock-knex",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "a knex mock adapter for simulating a db during testing",
   "main": "index.js",
   "scripts": {

@@ -10,7 +10,6 @@ var afterEach = lab.afterEach;
 var after = lab.after;
 var it = lab.it;
 var tracker = require('../lib/tracker');
-var _ = require('lodash');
 var knex = require('knex');
 
 function noop() {}
@@ -51,8 +50,9 @@ describe('Mock DB : ', function mockKnexTests() {
       done();
     });
 
-    it('should mock an adapter when called with an array of names', function mockSingleAdapter(done) {
-      mod.knex.install(['sqlite3', 'mysql', 'websql']);
+    it('should mock an adapter when called with an array of names',
+    function mockSingleAdapter(done) {
+      mod.knex.install([ 'sqlite3', 'mysql', 'websql' ]);
 
       expect(knex.Clients.sqlite3.name).to.equal('mockedKnex');
       expect(knex.Clients.mysql.name).to.equal('mockedKnex');
@@ -65,7 +65,7 @@ describe('Mock DB : ', function mockKnexTests() {
     });
 
     it('should mock all adapters when called without a name', function mockAllAdapter(done) {
-      var clients = mod.knex.install();
+      mod.knex.install();
 
       Object.keys(knex.Clients).forEach(function checkClient(name) {
         expect(knex.Clients[ name ].name).to.equal('mockedKnex');
@@ -80,7 +80,7 @@ describe('Mock DB : ', function mockKnexTests() {
       done();
     });
 
-    it('should have a knex#uninstlal method', function mockAdapterEntry(done) {
+    it('should have a knex#uninstall method', function mockAdapterEntry(done) {
       expect(mod.knex.uninstall).to.be.a('function');
       done();
     });
@@ -223,20 +223,16 @@ describe('Mock DB : ', function mockKnexTests() {
 
     it('should be able to get the first query',
     function queryHasResponse(done) {
-      var index = 0;
-
       tracker.install();
 
-      tracker.on('query', function gotQuery(query) {
-        query.index = index;
+      tracker.on('query', function gotQuery(query, step) {
+        query.index = step;
 
-        if (index === 2) {
-          expect(tracker.queries.first().index).to.equal(0);
+        if (step === 3) {
+          expect(tracker.queries.first().index).to.equal(1);
           tracker.uninstall();
           done();
         }
-
-        ++index;
       });
 
       db('users').select().then(noop);
@@ -246,20 +242,16 @@ describe('Mock DB : ', function mockKnexTests() {
 
     it('should be able to get the last query',
     function queryHasResponse(done) {
-      var index = 0;
-
       tracker.install();
 
-      tracker.on('query', function gotQuery(query) {
-        query.index = index;
+      tracker.on('query', function gotQuery(query, step) {
+        query.index = step;
 
-        if (index === 2) {
-          expect(tracker.queries.last().index).to.equal(2);
+        if (step === 3) {
+          expect(tracker.queries.last().index).to.equal(3);
           tracker.uninstall();
           done();
         }
-
-        ++index;
       });
 
       db('users').select().then(noop);
@@ -267,22 +259,40 @@ describe('Mock DB : ', function mockKnexTests() {
       db('users').select().then(noop);
     });
 
-    it('should be able to get a query at a specific index',
+    it('should be able to get a query at a specific step',
     function queryHasResponse(done) {
-      var index = 0;
-
       tracker.install();
 
-      tracker.on('query', function gotQuery(query) {
-        query.index = index;
+      tracker.on('query', function gotQuery(query, step) {
+        query.index = step;
 
-        if (index === 2) {
-          expect(tracker.queries.at(1).index).to.equal(1);
+        if (step === 3) {
+          expect(tracker.queries.step(2).index).to.equal(2);
           tracker.uninstall();
           done();
         }
+      });
+
+      db('users').select().then(noop);
+      db('users').select().then(noop);
+      db('users').select().then(noop);
+    });
+
+    it('should pass a step parameters to the query event',
+    function queryHasResponse(done) {
+      var index = 1;
+
+      tracker.install();
+
+      tracker.on('query', function gotQuery(query, step) {
+        expect(step).to.equal(index);
 
         ++index;
+
+        if (step === 3) {
+          tracker.uninstall();
+          done();
+        }
       });
 
       db('users').select().then(noop);
@@ -560,8 +570,6 @@ describe('Mock DB : ', function mockKnexTests() {
       });
     });
   });
-
-
 });
 
 module.exports.lab = lab;

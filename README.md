@@ -15,7 +15,7 @@ A mock knex adapter for simulating a database during testing
 var knex = require('knex');
 var mockDB = require('mock-knex');
 
-mockDB.use(knex); // tell it the knex package to use
+mockDB.knex.use(knex); // tell it the knex package to use
 
 mockDB.knex.install(); // mock all knex adapters
 mockDB.knex.install('sqlite3'); // mock knex sqlite3 adapters

@@ -423,6 +423,55 @@ describe('Mock DB : ', function mockKnexTests() {
 
         db.table('table').delete().then(noop);
       });
+
+      it('should support knex#stream method', function streamTest(done) {
+        tracker.on('query', function checkResult(query) {
+          expect(query.method).to.equal('select');
+          done();
+        });
+
+        var stream = db.select('columnA', 'columnB', 'columnC')
+                       .from('field')
+                       .where({
+                         'columnA': true
+                       })
+                       .stream();
+      });
+
+      it('should support transactions', function transactionsTest(done) {
+        tracker.on('query', function checkResult(query, step) {
+          switch (step) {
+            case 1:
+              expect(query.sql).to.equal('begin;');
+              query.response([]);
+              break;
+
+            case 2:
+              expect(query.method).to.equal('insert');
+              query.response(1);
+              break;
+
+            case 3:
+              expect(query.sql).to.equal('commit;');
+              break;
+
+            case 4:
+              expect(query.sql).to.equal('rollback;');
+              query.response();
+              break;
+          }
+        });
+
+        db.transaction(function(trx) {
+          db('table').transacting(trx).insert({name: 'My Table'})
+          .then(function(resp) {
+            var id = resp[0];
+            return id + '-' + trx;
+          })
+          .then(trx.commit)
+          .then(trx.rollback);
+        }).then(done, done);
+      });
     });
 
     describe('Bookshelf', function bookshelfTests() {

@@ -34,7 +34,7 @@ describe('Mock DB : ', function mockKnexTests() {
       done();
     });
 
-    it('should have a knex#instlal method', function mockAdapterEntry(done) {
+    it('should have a knex#install method', function mockAdapterEntry(done) {
       expect(mod.knex.install).to.be.a('function');
       done();
     });
@@ -300,16 +300,6 @@ describe('Mock DB : ', function mockKnexTests() {
       db('users').select().then(noop);
     });
 
-    it('should call the callback when a response is given', function selectTest1(done) {
-      tracker.install();
-
-      tracker.on('query', function checkResult(query) {
-        query.response();
-      });
-
-      db.select('field').from('table').then(done);
-    });
-
     it('should reply with the data passed to the query#response', function responseTest(done) {
       tracker.install();
 
@@ -436,6 +426,24 @@ describe('Mock DB : ', function mockKnexTests() {
                          'columnA': true
                        })
                        .stream();
+      });
+
+      it('should catch errors on stream', function streamTest(done) {
+        tracker.on('query', function checkResult(query) {
+          throw new Error('Third Error');
+        });
+
+        var stream = db.select('columnA', 'columnB', 'columnC')
+        .from('field')
+        .where({
+          'columnA': true
+        })
+        .stream(noop)
+        .catch(function streamError(err) {
+          expect(err).to.be.an.instanceof(Error);
+          expect(err.message).to.equal('Third Error')
+          done();
+        });
       });
 
       it('should support transactions', function transactionsTest(done) {

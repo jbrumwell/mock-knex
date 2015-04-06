@@ -5,13 +5,15 @@ A mock knex adapter for simulating a database during testing
 
 ## Installation
 
-    $ npm install mock-knex --save-dev
+```sh
+$ npm install mock-knex --save-dev
+```
 
 ## Mocking Knex
 
 ### Install
 
-```
+```js
 var knex = require('knex');
 var mockDB = require('mock-knex');
 
@@ -24,7 +26,7 @@ mockDB.knex.install(['sqlite3', 'mysql', 'websql']); // mock multiple adapters
 
 ### Uninstall
 
-```
+```js
 var mockDB = require('mock-knex');
 
 mockDB.knex.install(); // mock all knex adapters
@@ -41,7 +43,7 @@ examples.
 
 ### Example Usage with knex
 
-```
+```js
 var tracker = require('mock-knex').getTracker();
 
 tracker.install();
@@ -73,7 +75,7 @@ knex.table('table').first('fielda', 'fieldb').then(function checkFirstArrResults
 
 ### Example Usage with bookshelf.js
 
-```
+```js
 var tracker = require('mock-knex').getTracker();
 
 tracker.install();
@@ -98,7 +100,7 @@ Model.forge({ id : 1 }).fetch()
 
 ## Running Tests
 
-```
+```sh
 $ npm install
 $ npm test
 ```

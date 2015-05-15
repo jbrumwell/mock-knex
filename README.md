@@ -12,7 +12,7 @@ $ npm install mock-knex --save-dev
 
 ## Mocking Knex
 
-### Install
+### Mock
 
 ```js
 var knex = require('knex');
@@ -21,10 +21,28 @@ var db = knex({
     client: 'sqlite',
 });
 
-mockDb.mock(db, 'knex');
+mockDb.mock(db, 'knex@0.7');
 ```
 
-### Uninstall
+### Set Adapter
+
+Avoiding setting the platform and version, each time you mock a database. Not providing a version will result in the latest version being used.
+
+```js
+var knex = require('knex');
+var mockDB = require('mock-knex');
+var db = knex({
+    client: 'sqlite',
+});
+
+mockDb.setAdapter('knex@0.7');
+
+...
+
+mockDb.mock(db);
+```
+
+### Unmock Database
 
 ```js
 var mockDB = require('mock-knex');
@@ -33,11 +51,13 @@ var db = knex({
     client: 'sqlite',
 });
 
-mockDb.mock(db, 'knex');
+mockDb.setAdapter('knex@0.7');
+
+mockDb.mock(db);
 
 ... run tests ...
 
-mockDb.unmock(db, 'knex');
+mockDb.unmock(db);
 ```
 
 ## Tracker
@@ -101,6 +121,10 @@ Model.forge({ id : 1 }).fetch()
     done();
   });
 ```
+
+## More Examples?
+
+Checkout the [Tests](./test/tracker.spec.js)
 
 ## Running Tests
 

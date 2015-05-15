@@ -12,12 +12,15 @@ var after = lab.after;
 var it = lab.it;
 var tracker = require('../lib/tracker');
 var knex = require('knex');
+var knexPackage = require('knex/package.json');
 
 function noop() {}
 
 describe('Mock DB : ', function mockKnexTests() {
   var db;
   var mod = require('../');
+
+  mod.setAdapter('knex@' + knexPackage.version);
 
   describe('Module', function moduleTests() {
     it('should have a getTracker method', function getTrackerEntry(done) {
@@ -48,11 +51,11 @@ describe('Mock DB : ', function mockKnexTests() {
         }
       });
 
-      mod.mock(db, 'knex');
+      mod.mock(db);
 
       expect(db._oldClient).to.be.a('object');
 
-      mod.unmock(db, 'knex');
+      mod.unmock(db);
 
       expect(db._oldClient).to.be.undefined;
 
@@ -69,7 +72,7 @@ describe('Mock DB : ', function mockKnexTests() {
         }
       });
 
-      mod.mock(db, 'knex');
+      mod.mock(db);
 
       done();
     });
@@ -385,75 +388,6 @@ describe('Mock DB : ', function mockKnexTests() {
         });
       });
 
-      it('should support transactions (commit)', function transactionsTest(done) {
-        tracker.on('query', function checkResult(query, step) {
-          var sql = query.sql.toLowerCase();
-
-          switch (step) {
-            case 1:
-              expect(sql).to.contain('begin');
-              query.response([]);
-              break;
-
-            case 2:
-              expect(query.method).to.equal('insert');
-              query.response(1);
-              break;
-
-            case 3:
-              expect(sql).to.contain('commit');
-              query.response();
-              break;
-          }
-        });
-
-        db.transaction(function(trx) {
-          db('table').transacting(trx)
-                            .insert({name: 'My Table'})
-                            .then(trx.commit);
-        }).then(function response(resp) {
-          done();
-        }).catch(function error(err) {
-          done(err);
-        });
-      });
-
-      it('should support transactions (rollback)', function transactionsTest(done) {
-        tracker.on('query', function checkResult(query, step) {
-          var sql = query.sql.toLowerCase();
-
-          switch (step) {
-            case 1:
-              expect(sql).to.contain('begin');
-              query.response([]);
-              break;
-
-            case 2:
-              expect(query.method).to.equal('insert');
-              query.response(1);
-              break;
-
-            case 3:
-              debugger;
-              expect(sql).to.contain('rollback');
-              query.response([]);
-              break;
-          }
-        });
-
-        db.transaction(function(trx) {
-          db('table').transacting(trx)
-                     .insert({name: 'My Table'})
-                     .then(trx.rollback);
-        }).then(function response(resp) {
-          console.log('HERE', resp);
-          done();
-        }).catch(function error(err) {
-          console.log('error', arguments);
-          done(err);
-        });
-      });
-
       it('should support transactions (commit)', function(done) {
         tracker.on('query', function checkResult(query, step) {
           var sql = query.sql.toLowerCase();
@@ -506,7 +440,7 @@ describe('Mock DB : ', function mockKnexTests() {
           });
       });
 
-      it('should support transactions (rollback)', { only: true}, function(done) {
+      it('should support transactions (rollback)', function(done) {
         tracker.on('query', function checkResult(query, step) {
           var sql = query.sql.toLowerCase();
 

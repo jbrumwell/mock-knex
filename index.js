@@ -10,53 +10,95 @@ var platforms = [
   'knex',
 ];
 
-function getAdapter(adapter) {
-  var platform;
-  var version;
-  var parts;
+function MockDb() {
+  this.adapter = null;
+  this._adapter = null;
+}
 
-  parts = adapter.split('@');
-  platform = parts[0];
-  version = parts[1];
+MockDb.prototype.getTracker = function getTracker() {
+  return tracker;
+};
 
-  if (platforms.indexOf(platform) === -1) {
-    throw new Error('invalid platform: ' + platform);
+MockDb.prototype.mock = function mock(db, adapter) {
+  if (adapter) {
+    this.setAdapter(adapter);
   }
 
-  var versions = fs.readdirSync('./lib/platforms/' + platform);
+  return this._adapter.mock(db);
+};
 
-  if (version) {
-    version = semver.maxSatisfying(versions, version, true);
-  } else {
+MockDb.prototype.unmock = function unmock(db, adapter) {
+  if (adapter) {
+    this.setAdapter(adapter);
+  }
+
+  return this._adapter.unmock(db);
+};
+
+MockDb.prototype.setAdapter = function setAdapter(adapter) {
+  var parts;
+  var version;
+  var platform;
+
+  if (_.isString(adapter)) {
+    parts = adapter.split('@');
+    platform = parts[0];
+    version = parts[1];
+
+    if (platforms.indexOf(platform) === -1) {
+      throw new Error('invalid platform: ' + platform);
+    }
+
+    var versions = fs.readdirSync('./lib/platforms/' + platform);
+
     versions = versions.sort(function(a, b) {
       return a - b;
     });
 
-    version = versions.pop();
+    if (version) {
+      if (! semver.valid(version)) {
+        version += '.0';
+      }
+      versions.some(function(v) {
+        var found = 0;
+
+        if (semver.satisfies(version, '^' + v)) {
+          found = version = v;
+        }
+
+        return found > 0;
+      });
+    } else {
+      version = versions.pop();
+    }
+
+    this.adapter = {
+      platform: platform,
+      version: version,
+    };
+  } else {
+    this.adapter = adapter;
   }
 
-  return require(path.join(__dirname, './lib/platforms', platform, version));
-}
+  this._adapter = require(
+    path.join(
+      __dirname,
+      './lib/platforms',
+      this.adapter.platform,
+      this.adapter.version
+    )
+  );
 
-function getTracker() {
-  return tracker;
-}
+  return this;
+};
 
-module.exports = {
-  getTracker : getTracker,
-  mock : function (db, adapter) {
-    if (_.isString(adapter)) {
-      adapter = getAdapter(adapter);
-    }
+MockDb.prototype.getAdapter = function getAdapter() {
+  if (this._adapter === null) {
+    throw new Error('No Adapter has been set, see setAdapter');
+  }
 
-    return adapter.mock(db);
-  },
+  return this._adapter;
+};
 
-  unmock : function (db, adapter) {
-    if (_.isString(adapter)) {
-      adapter = getAdapter(adapter);
-    }
 
-    return adapter.unmock(db);
-  },
-}
+module.exports = new MockDb();

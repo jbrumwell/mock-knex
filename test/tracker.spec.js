@@ -1,6 +1,7 @@
 'use strict';
 
 var Lab = require('lab');
+var Promise = require('bluebird');
 var lab = Lab.script();
 var expect = Lab.expect;
 var describe = lab.describe;
@@ -11,12 +12,15 @@ var after = lab.after;
 var it = lab.it;
 var tracker = require('../lib/tracker');
 var knex = require('knex');
+var knexPackage = require('knex/package.json');
 
 function noop() {}
 
 describe('Mock DB : ', function mockKnexTests() {
   var db;
   var mod = require('../');
+
+  mod.setAdapter('knex@' + knexPackage.version);
 
   describe('Module', function moduleTests() {
     it('should have a getTracker method', function getTrackerEntry(done) {
@@ -29,109 +33,47 @@ describe('Mock DB : ', function mockKnexTests() {
       done();
     });
 
-    it('should have a knex property', function mockAdapterEntry(done) {
-      expect(mod.knex).to.be.a('object');
+    it('should have an mock method', function mockAdapterEntry(done) {
+      expect(mod.mock).to.be.a('function');
       done();
     });
 
-    it('should have a knex#install method', function mockAdapterEntry(done) {
-      expect(mod.knex.install).to.be.a('function');
-      done();
-    });
-
-    it('should mock an adapter when called with a name', function mockSingleAdapter(done) {
-      mod.knex.install('sqlite3');
-
-      expect(knex.Clients.sqlite3.name).to.equal('mockedKnex');
-      expect(knex.Clients.pg.name).to.not.equal('mockedKnex');
-
-      mod.knex.uninstall();
-
-      done();
-    });
-
-    it('should mock an adapter when called with an array of names',
-    function mockSingleAdapter(done) {
-      mod.knex.install([ 'sqlite3', 'mysql', 'websql' ]);
-
-      expect(knex.Clients.sqlite3.name).to.equal('mockedKnex');
-      expect(knex.Clients.mysql.name).to.equal('mockedKnex');
-      expect(knex.Clients.websql.name).to.equal('mockedKnex');
-      expect(knex.Clients.pg.name).to.not.equal('mockedKnex');
-
-      mod.knex.uninstall();
-
-      done();
-    });
-
-    it('should mock all adapters when called without a name', function mockAllAdapter(done) {
-      mod.knex.install();
-
-      Object.keys(knex.Clients).forEach(function checkClient(name) {
-        expect(knex.Clients[ name ].name).to.equal('mockedKnex');
-      });
-
-      mod.knex.uninstall();
-
-      Object.keys(knex.Clients).forEach(function checkClient(name) {
-        expect(knex.Clients[ name ].name).to.not.equal('mockedKnex');
-      });
-
-      done();
-    });
-
-    it('should have a knex#uninstall method', function mockAdapterEntry(done) {
-      expect(mod.knex.uninstall).to.be.a('function');
+    it('should have an unmock method', function mockAdapterEntry(done) {
+      expect(mod.unmock).to.be.a('function');
       done();
     });
 
     it('should revert a single adapter back to the original', function revertSingle(done) {
-      mod.knex.install('sqlite3');
-
-      expect(knex.Clients.sqlite3.name).to.equal('mockedKnex');
-
-      mod.knex.uninstall();
-
-      expect(knex.Clients.sqlite3.name).to.not.equal('mockedKnex');
-
-      done();
-    });
-
-    it('should revert all adapter back to the original', function revertSingle(done) {
-      mod.knex.install();
-
-      Object.keys(knex.Clients).forEach(function loopModified(client) {
-        expect(knex.Clients[ client ].name).to.equal('mockedKnex');
+      var db = knex({
+        dialect: 'sqlite3',
+        connection: {
+          filename: './data.db'
+        }
       });
 
-      mod.knex.uninstall();
+      mod.mock(db);
 
-      Object.keys(knex.Clients).forEach(function loopModified(client) {
-        expect(knex.Clients[ client ].name).to.not.equal('mockedKnex');
-      });
+      expect(db._oldClient).to.be.a('object');
 
-      done();
-    });
+      mod.unmock(db);
 
-    after(function afterModule(done) {
-      mod.knex.uninstall();
+      expect(db._oldClient).to.be.undefined;
+
       done();
     });
   });
 
   describe('Tracker', function trackerTests() {
     before(function beforeTracker(done) {
-      mod.knex.install('sqlite3');
-
       db = knex({
-        client : 'sqlite3'
+        dialect: 'sqlite3',
+        connection: {
+          filename: './data.db'
+        }
       });
 
-      done();
-    });
+      mod.mock(db);
 
-    after(function afterTracker(done) {
-      mod.knex.uninstall();
       done();
     });
 
@@ -446,41 +388,112 @@ describe('Mock DB : ', function mockKnexTests() {
         });
       });
 
-      it('should support transactions', function transactionsTest(done) {
+      it('should support transactions (commit)', function(done) {
         tracker.on('query', function checkResult(query, step) {
+          var sql = query.sql.toLowerCase();
+
+          if (query.method === 'insert') {
+            return query.response(1);
+          }
+
           switch (step) {
             case 1:
-              expect(query.sql).to.equal('begin;');
+              expect(sql).to.contain('begin');
               query.response([]);
               break;
 
-            case 2:
-              expect(query.method).to.equal('insert');
-              query.response(1);
+            case 6:
+              expect(sql).to.contain('commit');
+              query.response([]);
               break;
+          }
 
-            case 3:
-              expect(query.sql).to.equal('commit;');
-              break;
-
-            case 4:
-              expect(query.sql).to.equal('rollback;');
-              query.response();
-              break;
+          if (sql.indexOf('rollback') !== -1) {
+            query.response([]);
           }
         });
 
+        // Using trx as a transaction object:
         db.transaction(function(trx) {
-          db('table').transacting(trx).insert({name: 'My Table'})
-          .then(function(resp) {
-            var id = resp[0];
-            return id + '-' + trx;
-          })
-          .then(trx.commit)
-          .then(trx.rollback);
-        }).then(done, done);
+          var books = [
+            {title: 'Canterbury Tales'},
+            {title: 'Moby Dick'},
+            {title: 'Hamlet'}
+          ];
+
+          db.insert({name: 'Old Books'}, 'id')
+            .into('catalogues')
+            .transacting(trx)
+            .then(function(ids) {
+              return Promise.map(books, function(book) {
+                book.catalogue_id = ids[0];
+
+                return db.insert(book).into('books').transacting(trx);
+              });
+            }).then(trx.commit)
+              .catch(trx.rollback);
+          }).then(function(inserts) {
+            expect(inserts.length).to.equal(3);
+            done();
+          }).catch(function(error) {
+            done(error);
+          });
       });
-    });
+
+      it('should support transactions (rollback)', function(done) {
+        tracker.on('query', function checkResult(query, step) {
+          var sql = query.sql.toLowerCase();
+
+          if (query.method === 'insert') {
+            return query.response(1);
+          }
+
+          switch (step) {
+            case 1:
+              expect(sql).to.contain('begin');
+              query.response([]);
+              break;
+
+            case 6:
+              expect(sql).to.contain('commit');
+              query.response([]);
+              break;
+          }
+
+          if (sql.indexOf('rollback') !== -1) {
+            query.response([]);
+          }
+        });
+
+        // Using trx as a transaction object:
+        db.transaction(function(trx) {
+          var books = [
+            {title: 'Canterbury Tales'},
+            {title: 'Moby Dick'},
+            {title: 'Hamlet'}
+          ];
+
+          db.insert({name: 'Old Books'}, 'id')
+            .into('catalogues')
+            .transacting(trx)
+            .then(function(ids) {
+              throw new Error('testing');
+
+              return Promise.map(books, function(book) {
+                book.catalogue_id = ids[0];
+
+                return db.insert(book).into('books').transacting(trx);
+              });
+            }).then(trx.commit)
+              .catch(trx.rollback);
+          }).then(function(inserts) {
+            expect(inserts.length).to.equal(3);
+            done('transaction should have failed');
+          }).catch(function(error) {
+            done();
+          });
+      });
+  });
 
     describe('Bookshelf', function bookshelfTests() {
       var Model;

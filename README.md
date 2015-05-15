@@ -1,7 +1,8 @@
 mock-knex
 =========
 
-A mock knex adapter for simulating a database during testing
+A mock knex adapter for simulating a database during testing, exspecially usefull when used in combination
+with [fixture-factory](http://github.com/colonyamerican/fixture-factory).
 
 ## Installation
 
@@ -16,24 +17,27 @@ $ npm install mock-knex --save-dev
 ```js
 var knex = require('knex');
 var mockDB = require('mock-knex');
+var db = knex({
+    client: 'sqlite',
+});
 
-mockDB.knex.use(knex); // tell it the knex package to use
-
-mockDB.knex.install(); // mock all knex adapters
-mockDB.knex.install('sqlite3'); // mock knex sqlite3 adapters
-mockDB.knex.install(['sqlite3', 'mysql', 'websql']); // mock multiple adapters
+mockDb.mock(db, 'knex');
 ```
 
 ### Uninstall
 
 ```js
 var mockDB = require('mock-knex');
+var knex = require('knex');
+var db = knex({
+    client: 'sqlite',
+});
 
-mockDB.knex.install(); // mock all knex adapters
+mockDb.mock(db, 'knex');
 
 ... run tests ...
 
-mockDB.knex.uninstall(); // reverts mocked adapters
+mockDb.unmock(db, 'knex');
 ```
 
 ## Tracker

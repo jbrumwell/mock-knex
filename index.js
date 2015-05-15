@@ -1,38 +1,41 @@
 'use strict';
 
 var _ = require('lodash');
-var knex = require('knex');
-var client = require('./lib/knex');
-var knexClients;
+var fs = require('fs');
 var tracker = require('./lib/tracker');
+var semver = require('semver');
+var path = require('path');
 
-function mockedKnex() {
-  return client;
-}
+var platforms = [
+  'knex',
+];
 
-function install(names) {
-  if (! knexClients) {
-    knexClients = _.extend({}, knex.Clients);
+function getAdapter(adapter) {
+  var platform;
+  var version;
+  var parts;
+
+  parts = adapter.split('@');
+  platform = parts[0];
+  version = parts[1];
+
+  if (platforms.indexOf(platform) === -1) {
+    throw new Error('invalid platform: ' + platform);
   }
 
-  if (names) {
-    names = Array.isArray(names) ? names : [ names ];
+  var versions = fs.readdirSync('./lib/platforms/' + platform);
 
-    names.forEach(function(c) {
-      knex.Clients[ c ] = mockedKnex;
-    });
+  if (version) {
+    version = semver.maxSatisfying(versions, version, true);
   } else {
-    Object.keys(knex.Clients).forEach(install);
+    versions = versions.sort(function(a, b) {
+      return a - b;
+    });
+
+    version = versions.pop();
   }
-}
 
-function uninstall() {
-  knex.Clients = _.extend({}, knexClients);
-  knexClients = void 0;
-}
-
-function use(knexPackage) {
-  knex = knexPackage;
+  return require(path.join(__dirname, './lib/platforms', platform, version));
 }
 
 function getTracker() {
@@ -41,9 +44,19 @@ function getTracker() {
 
 module.exports = {
   getTracker : getTracker,
-  knex : {
-    install : install,
-    uninstall : uninstall,
-    use : use
-  }
+  mock : function (db, adapter) {
+    if (_.isString(adapter)) {
+      adapter = getAdapter(adapter);
+    }
+
+    return adapter.mock(db);
+  },
+
+  unmock : function (db, adapter) {
+    if (_.isString(adapter)) {
+      adapter = getAdapter(adapter);
+    }
+
+    return adapter.unmock(db);
+  },
 }

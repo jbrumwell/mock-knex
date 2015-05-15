@@ -29,109 +29,47 @@ describe('Mock DB : ', function mockKnexTests() {
       done();
     });
 
-    it('should have a knex property', function mockAdapterEntry(done) {
-      expect(mod.knex).to.be.a('object');
+    it('should have an mock method', function mockAdapterEntry(done) {
+      expect(mod.mock).to.be.a('function');
       done();
     });
 
-    it('should have a knex#install method', function mockAdapterEntry(done) {
-      expect(mod.knex.install).to.be.a('function');
-      done();
-    });
-
-    it('should mock an adapter when called with a name', function mockSingleAdapter(done) {
-      mod.knex.install('sqlite3');
-
-      expect(knex.Clients.sqlite3.name).to.equal('mockedKnex');
-      expect(knex.Clients.pg.name).to.not.equal('mockedKnex');
-
-      mod.knex.uninstall();
-
-      done();
-    });
-
-    it('should mock an adapter when called with an array of names',
-    function mockSingleAdapter(done) {
-      mod.knex.install([ 'sqlite3', 'mysql', 'websql' ]);
-
-      expect(knex.Clients.sqlite3.name).to.equal('mockedKnex');
-      expect(knex.Clients.mysql.name).to.equal('mockedKnex');
-      expect(knex.Clients.websql.name).to.equal('mockedKnex');
-      expect(knex.Clients.pg.name).to.not.equal('mockedKnex');
-
-      mod.knex.uninstall();
-
-      done();
-    });
-
-    it('should mock all adapters when called without a name', function mockAllAdapter(done) {
-      mod.knex.install();
-
-      Object.keys(knex.Clients).forEach(function checkClient(name) {
-        expect(knex.Clients[ name ].name).to.equal('mockedKnex');
-      });
-
-      mod.knex.uninstall();
-
-      Object.keys(knex.Clients).forEach(function checkClient(name) {
-        expect(knex.Clients[ name ].name).to.not.equal('mockedKnex');
-      });
-
-      done();
-    });
-
-    it('should have a knex#uninstall method', function mockAdapterEntry(done) {
-      expect(mod.knex.uninstall).to.be.a('function');
+    it('should have an unmock method', function mockAdapterEntry(done) {
+      expect(mod.unmock).to.be.a('function');
       done();
     });
 
     it('should revert a single adapter back to the original', function revertSingle(done) {
-      mod.knex.install('sqlite3');
-
-      expect(knex.Clients.sqlite3.name).to.equal('mockedKnex');
-
-      mod.knex.uninstall();
-
-      expect(knex.Clients.sqlite3.name).to.not.equal('mockedKnex');
-
-      done();
-    });
-
-    it('should revert all adapter back to the original', function revertSingle(done) {
-      mod.knex.install();
-
-      Object.keys(knex.Clients).forEach(function loopModified(client) {
-        expect(knex.Clients[ client ].name).to.equal('mockedKnex');
+      var db = knex({
+        dialect: 'sqlite3',
+        connection: {
+          filename: './data.db'
+        }
       });
 
-      mod.knex.uninstall();
+      mod.mock(db, 'knex');
 
-      Object.keys(knex.Clients).forEach(function loopModified(client) {
-        expect(knex.Clients[ client ].name).to.not.equal('mockedKnex');
-      });
+      expect(db._oldClient).to.be.a('object');
 
-      done();
-    });
+      mod.unmock(db, 'knex');
 
-    after(function afterModule(done) {
-      mod.knex.uninstall();
+      expect(db._oldClient).to.be.undefined;
+
       done();
     });
   });
 
   describe('Tracker', function trackerTests() {
     before(function beforeTracker(done) {
-      mod.knex.install('sqlite3');
-
       db = knex({
-        client : 'sqlite3'
+        dialect: 'sqlite3',
+        connection: {
+          filename: './data.db'
+        }
       });
 
-      done();
-    });
+      mod.mock(db, 'knex');
 
-    after(function afterTracker(done) {
-      mod.knex.uninstall();
       done();
     });
 
@@ -448,9 +386,10 @@ describe('Mock DB : ', function mockKnexTests() {
 
       it('should support transactions', function transactionsTest(done) {
         tracker.on('query', function checkResult(query, step) {
+          console.log(step, query);
           switch (step) {
             case 1:
-              expect(query.sql).to.equal('begin;');
+              expect(query.sql).to.equal('BEGIN;');
               query.response([]);
               break;
 

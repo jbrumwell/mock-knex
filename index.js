@@ -49,7 +49,7 @@ MockDb.prototype.setAdapter = function setAdapter(adapter) {
       throw new Error('invalid platform: ' + platform);
     }
 
-    var versions = fs.readdirSync('./lib/platforms/' + platform);
+    var versions = fs.readdirSync(path.join(__dirname, './lib/platforms', platform));
 
     versions = versions.sort(function(a, b) {
       return a - b;

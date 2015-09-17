@@ -19,66 +19,54 @@ MockDb.prototype.getTracker = function getTracker() {
   return tracker;
 };
 
-MockDb.prototype.mock = function mock(db, adapter) {
-  if (adapter) {
-    this.setAdapter(adapter);
-  }
+MockDb.prototype.mock = function mock(db) {
+  this._setAdapter(db);
 
   return this._adapter.mock(db);
 };
 
-MockDb.prototype.unmock = function unmock(db, adapter) {
-  if (adapter) {
-    this.setAdapter(adapter);
-  }
+MockDb.prototype.unmock = function unmock(db) {
+  this._setAdapter(db);
 
   return this._adapter.unmock(db);
 };
 
-MockDb.prototype.setAdapter = function setAdapter(adapter) {
-  var parts;
-  var version;
-  var platform;
+MockDb.prototype._setAdapter = function _setAdapter(db, platform, version) {
+  platform = platform || 'knex';
+  version = version || db.VERSION;
 
-  if (_.isString(adapter)) {
-    parts = adapter.split('@');
-    platform = parts[0];
-    version = parts[1];
-
-    if (platforms.indexOf(platform) === -1) {
-      throw new Error('invalid platform: ' + platform);
-    }
-
-    var versions = fs.readdirSync(path.join(__dirname, './lib/platforms', platform));
-
-    versions = versions.sort(function(a, b) {
-      return a - b;
-    });
-
-    if (version) {
-      if (! semver.valid(version)) {
-        version += '.0';
-      }
-      versions.some(function(v) {
-        var found = 0;
-
-        if (semver.satisfies(version, '^' + v)) {
-          found = version = v;
-        }
-
-        return found > 0;
-      });
-    } else {
-      version = versions.pop();
-    }
-
-    this.adapter = {
-      platform: platform,
-      version: version,
-    };
-  } else {
-    this.adapter = adapter;
+  if (platforms.indexOf(platform) === -1) {
+    throw new Error('invalid platform: ' + platform);
   }
+
+  var versions = fs.readdirSync(path.join(__dirname, './lib/platforms', platform));
+
+  versions = versions.sort(function(a, b) {
+    return a - b;
+  });
+
+  if (version) {
+    if (! semver.valid(version)) {
+      version += '.0';
+    }
+
+    versions.some(function(v) {
+      var found = 0;
+
+      if (semver.satisfies(version, '^' + v)) {
+        found = version = v;
+      }
+
+      return found > 0;
+    });
+  } else {
+    version = versions.pop();
+  }
+
+  this.adapter = {
+    platform: platform,
+    version: version
+  };
 
   this._adapter = require(
     path.join(
@@ -93,10 +81,6 @@ MockDb.prototype.setAdapter = function setAdapter(adapter) {
 };
 
 MockDb.prototype.getAdapter = function getAdapter() {
-  if (this._adapter === null) {
-    throw new Error('No Adapter has been set, see setAdapter');
-  }
-
   return this._adapter;
 };
 

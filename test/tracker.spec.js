@@ -20,8 +20,6 @@ describe('Mock DB : ', function mockKnexTests() {
   var db;
   var mod = require('../');
 
-  mod.setAdapter('knex@' + knexPackage.version);
-
   describe('Module', function moduleTests() {
     it('should have a getTracker method', function getTrackerEntry(done) {
       expect(mod.getTracker).to.be.a('function');

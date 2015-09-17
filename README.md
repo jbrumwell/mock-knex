@@ -21,7 +21,7 @@ var db = knex({
     client: 'sqlite',
 });
 
-mockDb.mock(db,);
+mockDb.mock(db);
 ```
 
 ### Unmock Database

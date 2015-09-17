@@ -21,24 +21,6 @@ var db = knex({
     client: 'sqlite',
 });
 
-mockDb.mock(db, 'knex@0.7');
-```
-
-### Set Adapter
-
-Avoiding setting the platform and version, each time you mock a database. Not providing a version will result in the latest version being used.
-
-```js
-var knex = require('knex');
-var mockDb = require('mock-knex');
-var db = knex({
-    client: 'sqlite',
-});
-
-mockDb.setAdapter('knex@0.7');
-
-...
-
 mockDb.mock(db);
 ```
 
@@ -50,8 +32,6 @@ var knex = require('knex');
 var db = knex({
     client: 'sqlite',
 });
-
-mockDb.setAdapter('knex@0.7');
 
 mockDb.mock(db);
 

@@ -42,7 +42,7 @@ describe('Mock DB : ', function mockKnexTests() {
     });
 
     it('should revert a single adapter back to the original', function revertSingle(done) {
-      var db = knex({
+      db = knex({
         dialect: 'sqlite3',
         connection: {
           filename: './data.db'

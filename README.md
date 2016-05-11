@@ -113,7 +113,7 @@ tracker.on('query', function sendResult(query, step) {
       expect(query.sql).to.equal(... some SQL string ...);
       query.response([{id: 2}]);
     }
-  ][step]();
+  ][step - 1]();
 });
 ```
 
@@ -198,7 +198,7 @@ examples.
               <dt>query</dt>
               <dd><a href="#query-details">Query Details</a> object</dd>
               <dt>step</dt>
-              <dd>Query execution call counter starting from 0. Increases after every 'query' event emitting. Gets resetted on calling <a href="#user-content-uninstall()">uninstall()</a>.</dd>
+              <dd>Query execution call counter starting from 1. Increases after every 'query' event emitting. Gets resetted on calling <a href="#user-content-uninstall()">uninstall()</a>.</dd>
             </dl>
           </dd>
         </dl>

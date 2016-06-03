@@ -46,7 +46,8 @@ describe('Mock DB : ', function mockKnexTests() {
         dialect: 'sqlite3',
         connection: {
           filename: './data.db'
-        }
+        },
+        useNullAsDefault: true
       });
 
       mod.mock(db);
@@ -67,7 +68,8 @@ describe('Mock DB : ', function mockKnexTests() {
         dialect: 'sqlite3',
         connection: {
           filename: './data.db'
-        }
+        },
+        useNullAsDefault: true
       });
 
       mod.mock(db);

@@ -50,13 +50,18 @@ describe('Mock DB : ', function mockKnexTests() {
         useNullAsDefault: true
       });
 
+      expect(db.client.driverName).to.equal('sqlite3');
+
       mod.mock(db);
 
+      expect(db.client.driverName).to.equal('mocked');
       expect(db._oldClient).to.be.a('object');
+      expect(db._oldClient.driverName).to.equal('sqlite3');
 
       mod.unmock(db);
 
       expect(db._oldClient).to.be.undefined;
+      expect(db.client.driverName).to.equal('sqlite3');
 
       done();
     });

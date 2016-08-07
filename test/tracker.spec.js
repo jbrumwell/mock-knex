@@ -52,11 +52,11 @@ describe('Mock DB : ', function mockKnexTests() {
 
       mod.mock(db);
 
-      expect(db._oldClient).to.be.a('object');
+      expect(db.client.driverName).to.equal('mocked');
 
       mod.unmock(db);
 
-      expect(db._oldClient).to.be.undefined;
+      expect(db.client.driverName).to.equal('sqlite3');
 
       done();
     });

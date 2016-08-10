@@ -13,7 +13,7 @@ test:
 	${LAB} -v -I __BluebirdErrorTypes__,Set,Intl,Map
 
 test-debug:
-	BLUEBIRD_DEBUG=1 DEBUG=pool2 node-debug -p 8888 ${LAB} -v -I __BluebirdErrorTypes__,Set,Intl,Map
+	BLUEBIRD_DEBUG=1 DEBUG=pool2 node-debug -p 8888 ${LAB} -m 0 -v -I __BluebirdErrorTypes__,Set,Intl,Map
 
 lint:
 	$(ESLINT) --ext .js --ext .jsx .

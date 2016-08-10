@@ -20,8 +20,6 @@ export let spec = _.defaultsDeep({
         constructor : {
           prototype : {
             _query,
-
-            processResponse,
           },
         },
         driverName : 'mocked',

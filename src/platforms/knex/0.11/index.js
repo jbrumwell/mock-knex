@@ -18,7 +18,7 @@ export const spec = _.defaultsDeep({
         },
       },
     },
-  ],  
+  ],
 }, definition);
 
 export default {
@@ -27,6 +27,6 @@ export default {
   },
 
   unmock(db) {
-
+    return transformer.restore(db);
   },
 };

@@ -55,6 +55,8 @@ class MockKnex {
       version,
     };
 
+    console.log('loading', this.adapter.version);
+
     this._adapter = require(
       path.join(
         __dirname,

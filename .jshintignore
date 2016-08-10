@@ -1,5 +1,0 @@
-node_modules/**
-client/bower_components/**
-client/build/**
-client/tests/libs/**
-tasks/**

@@ -10,15 +10,16 @@ var beforeEach = lab.beforeEach;
 var afterEach = lab.afterEach;
 var after = lab.after;
 var it = lab.it;
-var tracker = require('../lib/tracker');
+var tracker = require('../dist/tracker').default;
 var knex = require('knex');
 var knexPackage = require('knex/package.json');
+var MockSymbol = require('../dist/util/transformer').MockSymbol;
 
 function noop() {}
 
 describe('Mock DB : ', function mockKnexTests() {
   var db;
-  var mod = require('../');
+  var mod = require('../').default;
 
   describe('Module', function moduleTests() {
     it('should have a getTracker method', function getTrackerEntry(done) {
@@ -47,18 +48,42 @@ describe('Mock DB : ', function mockKnexTests() {
         connection: {
           filename: './data.db'
         },
-        useNullAsDefault: true
+        pool: {
+          min: 0,
+          max: 7,
+        },
+        useNullAsDefault: true,
+        debug: true,
       });
+
+      const run = () => {
+        return db.raw('select sqlite_version() as version;');
+      }
 
       mod.mock(db);
 
-      expect(db._oldClient).to.be.a('object');
+      expect(db[MockSymbol]).to.be.a('object');
 
-      mod.unmock(db);
+      run()
+      .then((result) => {
+        expect(result).to.be.undefined;
 
-      expect(db._oldClient).to.be.undefined;
+        mod.unmock(db);
 
-      done();
+        expect(db[MockSymbol]).to.be.undefined;
+
+        return run();
+      })
+      .then((result) => {
+        console.log(result);
+        expect(result).to.be.a('array');
+        expect(result[0]).to.be.a('object');
+        expect(result[0].version).to.be.a('string');
+        done();
+      }).catch((e) => {
+        console.log(e.stack);
+        process.exit();
+      });
     });
   });
 

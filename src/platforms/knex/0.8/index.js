@@ -12,6 +12,8 @@ const processResponse = _.get(definition, 'replace[0].client.Runner.prototype.pr
 const _query = function _query(con, obj) {
   obj.context = this;
 
+  obj.transacting = !! this.transacting;
+
   return new Promise((resolve, reject) => tracker.queries.track(obj, resolve, reject));
 };
 

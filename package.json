@@ -1,6 +1,6 @@
 {
   "name": "mock-knex",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "a knex mock adapter for simulating a db during testing",
   "main": "index.js",
   "scripts": {
@@ -33,7 +33,7 @@
     "sqlite3": "^3.0.8"
   },
   "peerDependencies": {
-    "knex": "^0.7.0 || ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0"
+    "knex": "^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0"
   },
   "dependencies": {
     "bluebird": "^3.4.1",

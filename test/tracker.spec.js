@@ -97,18 +97,27 @@ describe('Mock DB : ', function mockKnexTests() {
       done();
     });
 
-    it('should not track if not installed', function trackOnlyWhenInstalled(done) {
-      db('users').select().then(noop);
-      expect(tracker.queries.count()).to.equal(0);
+    beforeEach(function beforeEach(done) {
+      tracker.install();
       done();
     });
 
-    it('should track if installed', function trackWhenInstalled(done) {
-      tracker.install();
+    afterEach(function afterEach(done) {
+      tracker.uninstall();
+      done();
+    });
 
+    it('should not track if not installed', function trackOnlyWhenInstalled(done) {
+      tracker.uninstall();
+      db('users').select().then(function() {
+        expect(tracker.queries.count()).to.equal(0);
+        done();
+      });
+    });
+
+    it('should track if installed', function trackWhenInstalled(done) {
       tracker.once('query', function gotQuery(query) {
         expect(tracker.queries.count()).to.equal(1);
-        tracker.uninstall();
         done();
       });
 
@@ -116,8 +125,6 @@ describe('Mock DB : ', function mockKnexTests() {
     });
 
     it('uninstall should stop tracking', function trackWhenInstalled(done) {
-      tracker.install();
-
       expect(tracker.tracking).to.equal(true);
 
       tracker.uninstall();
@@ -134,7 +141,8 @@ describe('Mock DB : ', function mockKnexTests() {
       tracker.once('query', function gotQuery(query) {
         expect(query).to.have.property('response');
         expect(query.response).to.be.a('function');
-        tracker.uninstall();
+        expect(query.reject).to.be.a('function');
+        expect(query.transacting).to.be.a('boolean');
         done();
       });
 
@@ -143,8 +151,6 @@ describe('Mock DB : ', function mockKnexTests() {
 
     it('should return a query object with a method property',
     function queryHasMethod(done) {
-      tracker.install();
-
       tracker.once('query', function gotQuery(query) {
         expect(query).to.have.property('method');
         expect(query.method).to.be.a('string');
@@ -157,12 +163,9 @@ describe('Mock DB : ', function mockKnexTests() {
 
     it('should return a query object with a bindings property',
     function queryHasBindings(done) {
-      tracker.install();
-
       tracker.once('query', function gotQuery(query) {
         expect(query).to.have.property('bindings');
         expect(query.bindings).to.be.a('array');
-        tracker.uninstall();
         done();
       });
 
@@ -171,8 +174,6 @@ describe('Mock DB : ', function mockKnexTests() {
 
     it('should return a query object with a sql property',
     function queryHasSql(done) {
-      tracker.install();
-
       tracker.once('query', function gotQuery(query) {
         expect(query).to.have.property('sql');
         expect(query.sql).to.be.a('string');
@@ -185,8 +186,6 @@ describe('Mock DB : ', function mockKnexTests() {
 
     it('should be able to get the first query',
     function queryHasResponse(done) {
-      tracker.install();
-
       tracker.on('query', function gotQuery(query, step) {
         query.index = step;
 
@@ -204,8 +203,6 @@ describe('Mock DB : ', function mockKnexTests() {
 
     it('should be able to get the last query',
     function queryHasResponse(done) {
-      tracker.install();
-
       tracker.on('query', function gotQuery(query, step) {
         query.index = step;
 
@@ -223,8 +220,6 @@ describe('Mock DB : ', function mockKnexTests() {
 
     it('should be able to get a query at a specific step',
     function queryHasResponse(done) {
-      tracker.install();
-
       tracker.on('query', function gotQuery(query, step) {
         query.index = step;
 
@@ -244,8 +239,6 @@ describe('Mock DB : ', function mockKnexTests() {
     function queryHasResponse(done) {
       var index = 1;
 
-      tracker.install();
-
       tracker.on('query', function gotQuery(query, step) {
         expect(step).to.equal(index);
 
@@ -263,8 +256,6 @@ describe('Mock DB : ', function mockKnexTests() {
     });
 
     it('should reply with the data passed to the query#response', function responseTest(done) {
-      tracker.install();
-
       tracker.on('query', function checkResult(query) {
         query.response({ works : true });
       });
@@ -276,17 +267,19 @@ describe('Mock DB : ', function mockKnexTests() {
       });
     });
 
+    it('query#reject', function responseTest(done) {
+      tracker.on('query', function checkResult(query) {
+        query.reject('i threw up');
+      });
+
+      db.select('field').from('table').catch(function(error) {
+        expect(error.message).to.be.a('string');
+        expect(error.message).to.equal('select "field" from "table" - i threw up');
+        done();
+      });
+    });
+
     describe('Knex', function knexTests() {
-      beforeEach(function beforeEach(done) {
-        tracker.install();
-        done();
-      });
-
-      afterEach(function afterEach(done) {
-        tracker.uninstall();
-        done();
-      });
-
       it('should support knex#first method with array response', function firstArrTest(done) {
         tracker.on('query', function checkResult(query) {
           expect(query.method).to.equal('first');
@@ -414,6 +407,8 @@ describe('Mock DB : ', function mockKnexTests() {
       it('should support transactions (commit)', function(done) {
         tracker.on('query', function checkResult(query, step) {
           var sql = query.sql.toLowerCase();
+
+          expect(query.transacting).to.be.true;
 
           if (query.method === 'insert') {
             return query.response(1);

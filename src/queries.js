@@ -43,6 +43,7 @@ export default class Queries {
       delete query.result;
 
       step = this.queries.push(query);
+
       this.tracker.emit('query', query, step);
     } else {
       resolve();

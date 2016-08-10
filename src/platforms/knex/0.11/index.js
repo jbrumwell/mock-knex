@@ -1,7 +1,6 @@
 import { spec as definition, defineConnection } from '../0.8/index';
 import _ from 'lodash';
 import transformer from '../../../util/transformer';
-import tracker from '../../../tracker';
 import Promise from 'bluebird';
 
 const connection = {

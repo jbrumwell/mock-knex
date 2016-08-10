@@ -55,8 +55,6 @@ class MockKnex {
       version,
     };
 
-    console.log('loading', this.adapter.version);
-
     this._adapter = require(
       path.join(
         __dirname,
@@ -83,12 +81,7 @@ class MockKnex {
   unmock(db) {
     this._setAdapter(db);
 
-    try {
-      this._adapter.unmock(db);
-    } catch (e) {
-      console.log(e.stack);
-      process.exit();
-    }
+    return this._adapter.unmock(db);
   }
 
   getAdapter() {

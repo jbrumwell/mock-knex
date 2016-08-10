@@ -248,6 +248,27 @@ The object containing query details that is being sent to knex database dialect 
       <td>Unknown purpose</td>
     </tr>
     <tr>
+      <td><b>transacting</b></td>
+      <td></td>
+      <td>Boolean</td>
+      <td>Whether or not the query was executed from within a transaction</td>
+    </tr>
+    <tr>
+      <td><b>reject(Error)</b></td>
+      <td>
+        <dl>
+          <dt>Error</dt>
+          <dd>
+            The Error, string or instance of Error, which represents why the result was rejected
+          </dd>
+        </dl>
+      </td>
+      <td>-</td>
+      <td>
+        Function that needs to be called to mock database query result for knex.
+      </td>
+    </tr>
+    <tr>
       <td><b>response(values)</b></td>
       <td>
         <dl>

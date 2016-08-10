@@ -379,6 +379,9 @@ describe('Mock DB : ', function mockKnexTests() {
       it('should support knex#stream method', function streamTest(done) {
         tracker.on('query', function checkResult(query) {
           expect(query.method).to.equal('select');
+          query.response([], {
+            stream : true,
+          });
           done();
         });
 

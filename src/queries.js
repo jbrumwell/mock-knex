@@ -17,9 +17,15 @@ export default class Queries {
     let step;
 
     if (this.tracker.tracking) {
-      query.response = function(result) {
-        query.result = result;
-        resolve(query);
+      query.response = function(response, options = {}) {
+        if (! options.stream) {
+          query.result = response;
+          resolve(query);
+        } else {
+          resolve({
+            response,
+          });
+        }
       };
 
       query.resolve = function(result) {

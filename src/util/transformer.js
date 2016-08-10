@@ -4,7 +4,7 @@ import _ from 'lodash';
 export const MockSymbol = Symbol('unmock');
 
 class Mocker {
-  context(obj, path, includePrototype = false) {
+  context(obj, path) {
     const paths = path.split('.');
 
     paths.pop();
@@ -29,7 +29,7 @@ class Mocker {
     .value();
   }
 
-  replace(obj, specs, options = {}) {
+  replace(obj, specs) {
     const replaced = {};
 
     specs = _.isArray(specs) ? specs : [specs];
@@ -42,7 +42,7 @@ class Mocker {
 
         path = path.replace('._constructor.', '.constructor.');
 
-        const context = this.context(obj, path, options.includePrototype);
+        const context = this.context(obj, path);
         const name = _.last(path.split('.'));
         const replacedPath = path.replace('.constructor.', '._constructor.');
 
@@ -132,9 +132,7 @@ class Mocker {
     }
 
     if (spec.replace) {
-      this.replace(obj, spec.replace, {
-        includePrototype : false,
-      });
+      this.replace(obj, spec.replace);
     }
 
     if (spec.define) {

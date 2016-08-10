@@ -15,11 +15,22 @@ const _query = function _query(con, obj) {
   return new Promise((resolve, reject) => tracker.queries.track(obj, resolve, reject));
 };
 
+export function defineConnection(conn) {
+  return {
+    'client.Runner.prototype.connection' : {
+      get() {
+        return conn;
+      },
+      set : _.noop,
+    },
+  };
+}
+
 export let spec = _.defaultsDeep({
   replace : [
     {
       client : {
-        constructor : {
+        _constructor : {
           prototype : {
             _query,
           },
@@ -41,14 +52,7 @@ export let spec = _.defaultsDeep({
     },
   ],
 
-  define : {
-    'client.Runner.prototype.connection' : {
-      get() {
-        return connection;
-      },
-      set : _.noop,
-    },
-  },
+  define : defineConnection(connection),
 }, definition);
 
 _.unset(spec.replace[0].client.Runner, 'prototype._query');

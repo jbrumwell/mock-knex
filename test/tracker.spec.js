@@ -280,6 +280,16 @@ describe('Mock DB : ', function mockKnexTests() {
     });
 
     describe('Knex', function knexTests() {
+      it('should support schema#hasTable', function createTableTest(done) {
+        tracker.on('query', function checkResult(query) {
+          expect(query.sql).to.be.a('string');
+          expect(query.sql).to.equal('select * from sqlite_master where type = \'table\' and name = ?');
+          done();
+        });
+
+        db.schema.hasTable('testing').then(noop);
+      });
+
       it('should support knex#first method with array response', function firstArrTest(done) {
         tracker.on('query', function checkResult(query) {
           expect(query.method).to.equal('first');

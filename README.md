@@ -4,6 +4,10 @@ mock-knex
 A mock knex adapter for simulating a database during testing, especially useful when used in combination
 with [fixture-factory](http://github.com/colonyamerican/fixture-factory).
 
+## Knex Support
+
+Currently supports knex 0.8 through 0.11
+
 ## Installation
 
 ```sh

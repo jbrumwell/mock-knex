@@ -10,6 +10,8 @@ const connection = {
 
 const processResponse = _.get(definition, 'replace[0].client.Runner.prototype.processResponse');
 const _query = function _query(con, obj) {
+  obj.context = this;
+
   return new Promise((resolve, reject) => tracker.queries.track(obj, resolve, reject));
 };
 
@@ -23,6 +25,7 @@ export let spec = _.defaultsDeep({
           },
         },
         driverName : 'mocked',
+        acquireConnection : Promise.method(_.identity.bind(_, connection)),
         acquireRawConnection : Promise.method(_.identity.bind(_, connection)),
         destroyRawConnection : (con, cb) => cb(),
         processResponse,

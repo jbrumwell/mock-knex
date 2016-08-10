@@ -71,8 +71,6 @@ describe('Mock DB : ', function mockKnexTests() {
 
         expect(db[MockSymbol]).to.be.undefined;
 
-        debugger;
-
         return db.raw('select sqlite_version() as version;');
       })
       .then((result) => {

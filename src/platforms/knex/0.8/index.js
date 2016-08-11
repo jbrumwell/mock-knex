@@ -1,14 +1,26 @@
 import Promise from 'bluebird';
 import _ from 'lodash';
 import tracker from '../../../tracker';
-import { spec as definition } from '../0.7/index';
 import transformer from '../../../util/transformer';
 
 const connection = {
   id : 'mockedConnection',
 };
 
-const processResponse = _.get(definition, 'replace[0].client.Runner.prototype.processResponse');
+const processResponse = function(obj) {
+  obj = obj || {};
+
+  if (obj.output) {
+    obj.result = obj.output.call(this, obj.result);
+  } else if (obj.method === 'first') {
+    obj.result = Array.isArray(obj.result) ? obj.result[0] : obj.result;
+  } else if (obj.method === 'pluck') {
+    obj.result = _.map(obj.result, obj.pluck);
+  }
+
+  return obj.result;
+};
+
 const _query = function _query(con, obj) {
   obj.context = this;
 
@@ -28,7 +40,7 @@ export function defineConnection(conn) {
   };
 }
 
-export let spec = _.defaultsDeep({
+export let spec = {
   replace : [
     {
       client : {
@@ -41,6 +53,7 @@ export let spec = _.defaultsDeep({
         acquireConnection : Promise.method(_.identity.bind(_, connection)),
         acquireRawConnection : Promise.method(_.identity.bind(_, connection)),
         destroyRawConnection : (con, cb) => cb(),
+        releaseConnection : _.noop,
         processResponse,
 
         Runner : {
@@ -55,14 +68,7 @@ export let spec = _.defaultsDeep({
   ],
 
   define : defineConnection(connection),
-}, definition);
-
-_.unset(spec.replace[0].client.Runner, 'prototype._query');
-_.unset(spec.replace[0].client.Runner, 'prototype.processResponse');
-_.unset(spec.replace[0].client, 'dialect');
-_.unset(spec.replace[0].client, 'initDriver');
-_.unset(spec.replace[0].client, 'initPool');
-_.unset(spec.replace[0].client, 'initMigrator');
+};
 
 export default {
   mock(db) {

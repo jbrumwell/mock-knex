@@ -18,8 +18,6 @@ var _tracker = require('../../../tracker');
 
 var _tracker2 = _interopRequireDefault(_tracker);
 
-var _index = require('../0.7/index');
-
 var _transformer = require('../../../util/transformer');
 
 var _transformer2 = _interopRequireDefault(_transformer);
@@ -30,7 +28,20 @@ var connection = {
   id: 'mockedConnection'
 };
 
-var processResponse = _lodash2.default.get(_index.spec, 'replace[0].client.Runner.prototype.processResponse');
+var processResponse = function processResponse(obj) {
+  obj = obj || {};
+
+  if (obj.output) {
+    obj.result = obj.output.call(this, obj.result);
+  } else if (obj.method === 'first') {
+    obj.result = Array.isArray(obj.result) ? obj.result[0] : obj.result;
+  } else if (obj.method === 'pluck') {
+    obj.result = _lodash2.default.map(obj.result, obj.pluck);
+  }
+
+  return obj.result;
+};
+
 var _query = function _query(con, obj) {
   obj.context = this;
 
@@ -53,7 +64,7 @@ function defineConnection(conn) {
   };
 }
 
-var spec = exports.spec = _lodash2.default.defaultsDeep({
+var spec = exports.spec = {
   replace: [{
     client: {
       _constructor: {
@@ -67,6 +78,7 @@ var spec = exports.spec = _lodash2.default.defaultsDeep({
       destroyRawConnection: function destroyRawConnection(con, cb) {
         return cb();
       },
+      releaseConnection: _lodash2.default.noop,
       processResponse: processResponse,
 
       Runner: {
@@ -80,14 +92,7 @@ var spec = exports.spec = _lodash2.default.defaultsDeep({
   }],
 
   define: defineConnection(connection)
-}, _index.spec);
-
-_lodash2.default.unset(spec.replace[0].client.Runner, 'prototype._query');
-_lodash2.default.unset(spec.replace[0].client.Runner, 'prototype.processResponse');
-_lodash2.default.unset(spec.replace[0].client, 'dialect');
-_lodash2.default.unset(spec.replace[0].client, 'initDriver');
-_lodash2.default.unset(spec.replace[0].client, 'initPool');
-_lodash2.default.unset(spec.replace[0].client, 'initMigrator');
+};
 
 exports.default = {
   mock: function mock(db) {

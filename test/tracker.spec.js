@@ -19,7 +19,7 @@ function noop() {}
 
 describe('Mock DB : ', function mockKnexTests() {
   var db;
-  var mod = require('../').default;
+  var mod = require('../');
 
   describe('Module', function moduleTests() {
     it('should have a getTracker method', function getTrackerEntry(done) {

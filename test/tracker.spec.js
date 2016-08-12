@@ -382,10 +382,15 @@ describe('Mock DB : ', function mockKnexTests() {
       it('should support knex#stream method', function streamTest(done) {
         tracker.on('query', function checkResult(query) {
           expect(query.method).to.equal('select');
-          query.response([], {
+          query.response([
+            {
+              columnA : true,
+              columnB : 'testing',
+              columnC : 1,
+            },
+          ], {
             stream : true,
           });
-          done();
         });
 
         var stream = db.select('columnA', 'columnB', 'columnC')
@@ -394,6 +399,15 @@ describe('Mock DB : ', function mockKnexTests() {
                          'columnA': true
                        })
                        .stream();
+
+
+        stream.on('data', function(result) {
+          expect(result).to.be.a('object');
+          expect(result.columnC).to.equal(1);
+          expect(result.columnB).to.equal('testing');
+          expect(result.columnA).to.equal(true);
+          done();
+        });
       });
 
       it('should catch errors on stream', function streamTest(done) {

@@ -305,5 +305,5 @@ The object containing query details that is being sent to knex database dialect 
 
 ```sh
 $ npm install
-$ npm test
+$ make test-suite
 ```

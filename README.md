@@ -273,12 +273,23 @@ The object containing query details that is being sent to knex database dialect 
       </td>
     </tr>
     <tr>
-      <td><b>response(values)</b></td>
+      <td><b>response(values, options)</b></td>
       <td>
         <dl>
           <dt>values</dt>
           <dd>
             An array of mock data to be returned by database. For Bookshelf this is mostly array of objects. Knex could return any type of data.
+          </dd>
+        </dl>
+        <dl>
+          <dt>options</dt>
+          <dd>
+            <dl>
+              <dt>stream</dt>
+              <dd>
+                Is this a stream response, defaults to false
+              </dd>
+            </dl>
           </dd>
         </dl>
       </td>

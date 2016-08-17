@@ -4,5 +4,6 @@ test
 .babelrc
 .editorconfig
 .eslintignore
+.eslintrc
 data.db
 Makefile

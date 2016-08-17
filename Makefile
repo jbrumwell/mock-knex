@@ -10,7 +10,7 @@ clean:
 	-rm -rf ./dist
 
 test:
-	${LAB} -v -I __BluebirdErrorTypes__,Set,Intl,Map
+	${LAB} -v -I __BluebirdErrorTypes__,Set,Intl,Map,__core-js_shared__
 
 test-suite:
 	npm i knex@0.8
@@ -23,7 +23,7 @@ test-suite:
 	make test
 
 test-debug:
-	BLUEBIRD_DEBUG=1 DEBUG=pool2 node-debug -p 8888 ${LAB} -m 0 -v -I __BluebirdErrorTypes__,Set,Intl,Map
+	BLUEBIRD_DEBUG=1 DEBUG=pool2 node-debug -p 8888 ${LAB} -m 0 -v -I __BluebirdErrorTypes__,Set,Intl,Map,__core-js_shared__
 
 lint:
 	$(ESLINT) --ext .js --ext .jsx .

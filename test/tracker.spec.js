@@ -316,6 +316,23 @@ describe('Mock DB : ', function mockKnexTests() {
         });
       });
 
+      it('should support knex#count', function firstArrTest(done) {
+        tracker.on('query', function checkResult(query) {
+          expect(query.method).to.equal('select');
+          expect(query.sql).to.equal('select count(*) from "table"');
+
+          query.response({
+            count : 10,
+          });
+        });
+
+        db.table('table').count().then(function checkCountResults(model) {
+          expect(model).to.be.a('object');
+          expect(model.count).to.equal(10);
+          done();
+        });
+      });
+
       it('should support knex#first method with object response', function firstObjTest(done) {
         tracker.on('query', function checkResult(query) {
           expect(query.method).to.equal('first');
@@ -605,6 +622,25 @@ describe('Mock DB : ', function mockKnexTests() {
               expect(collection.models[0].get('foo')).to.equal('bar');
               expect(collection.models[1].get('foo')).to.equal('baz');
 
+              done();
+            });
+        });
+
+        it('should work with Model#count', function modelCountTest(done) {
+          tracker.on('query', function sendResult(query) {
+            expect(query.sql).to.equal('select count("count") as "count" from "models" where "color" = ?');
+            expect(query.method).to.equal('select');
+
+            query.response([{
+              count : 10,
+            }]);
+          });
+
+          Model.forge()
+          .where('color', 'blue')
+          .count('count')
+          .then(function countResult(count) {
+              expect(count).to.equal(10);
               done();
             });
         });

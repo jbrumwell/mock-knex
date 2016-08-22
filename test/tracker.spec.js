@@ -290,6 +290,37 @@ describe('Mock DB : ', function mockKnexTests() {
         db.schema.hasTable('testing').then(noop);
       });
 
+      it('should support knex#Raw', function createTableTest(done) {
+        tracker.on('query', function checkResult(query) {
+          expect(query.method).to.equal('raw');
+          query.response([
+            {
+              fielda : 'A',
+              fieldb : 'B'
+            },
+            {
+              fielda : 'C',
+              fieldb : 'D'
+            },
+            {
+              fielda : 'E',
+              fieldb : 'F'
+            }
+          ]);
+        });
+
+        db.raw('SELECT fielda, fieldb FROM table;').then(function checkFirstArrResults(rows) {
+          expect(rows).to.be.a('array');
+          expect(rows[0]).to.be.a('object');
+          expect(rows[1]).to.be.a('object');
+          expect(rows[2]).to.be.a('object');
+          expect(rows[0].fielda).to.equal('A');
+          expect(rows[1].fielda).to.equal('C');
+          expect(rows[2].fielda).to.equal('E');
+          done();
+        });
+      });
+
       it('should support knex#first method with array response', function firstArrTest(done) {
         tracker.on('query', function checkResult(query) {
           expect(query.method).to.equal('first');

@@ -676,6 +676,38 @@ describe('Mock DB : ', function mockKnexTests() {
             });
         });
 
+        it('should work with Model#save update with transaction', function modelsaveUpdateTest(done) {
+          var bookshelf = require('bookshelf')(db);
+
+          tracker.on('query', function sendResult(query, step) {
+            switch (step) {
+              case 1:
+                expect(query.sql.toLowerCase()).to.equal('begin;');
+                query.response([]);
+                break;
+              case 2:
+                expect(query.method).to.equal('update');
+                expect(query.bindings).to.include('bar');
+                expect(query.bindings).to.include(10);
+                query.response([])
+                break;
+              case 3:
+                expect(query.sql.toLowerCase()).to.equal('commit;');
+                query.response([]);
+                break;
+            }
+          });
+
+          bookshelf.transaction(function bookshelfTransaction(trx) {
+            return Model.forge({ id : 10, foo : 'bar' }).save(null, {
+              transacting : trx,
+            }).then(function(model) {
+              expect(model.get('id')).to.equal(10);
+              expect(model.get('foo')).to.equal('bar');
+            }).asCallback(done);
+          });
+        });
+
         it('should work with Model#save on updates', function modelsaveUpdateTest(done) {
           tracker.on('query', function sendResult(query) {
             expect(query.method).to.equal('update');

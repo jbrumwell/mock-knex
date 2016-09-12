@@ -1,0 +1,21 @@
+version: '2'
+services:
+  mysql:
+    image: mysql
+    restart: always
+    ports:
+    - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: mockKnex
+      MYSQL_DATABASE: mockKnex
+      MYSQL_USER: mockKnex
+      MYSQL_PASSWORD: mockKnex
+  postgres:
+    image: colonyamerican/postgres
+    restart: always
+    ports:
+    - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: mockKnex
+      POSTGRES_USER: mockKnex
+      POSTGRES_DB: mockKnex

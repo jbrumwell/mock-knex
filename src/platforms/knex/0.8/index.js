@@ -46,7 +46,24 @@ export let spec = {
       client : {
         _constructor : {
           prototype : {
+            _stream(conn, sql, stream) {
+              return new Promise((resolver, rejecter) => {
+                stream.on('error', rejecter);
+                stream.on('end', resolver);
+
+                return this._query(conn, sql).then((obj) => {
+                  return obj.response;
+                }).map((row) => {
+                  stream.write(row);
+                }).catch((err) => {
+                  stream.emit('error', err);
+                }).then(() => {
+                  stream.end();
+                });
+              });
+            },
             _query,
+            processResponse,
           },
         },
         driverName : 'mocked',

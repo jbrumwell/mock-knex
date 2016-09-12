@@ -22,6 +22,8 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
+var _transformer = require('./util/transformer');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -108,6 +110,11 @@ var MockKnex = function () {
       this._setAdapter(db);
 
       return this._adapter.unmock(db);
+    }
+  }, {
+    key: 'isMocked',
+    value: function isMocked(db) {
+      return !!db[_transformer.MockSymbol];
     }
   }, {
     key: 'getAdapter',

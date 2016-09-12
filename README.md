@@ -305,5 +305,6 @@ The object containing query details that is being sent to knex database dialect 
 
 ```sh
 $ npm install
+$ docker-compose up -d
 $ make test-suite
 ```

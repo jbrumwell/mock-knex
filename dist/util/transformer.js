@@ -50,6 +50,23 @@ var Mocker = function () {
       }).flatten().value();
     }
   }, {
+    key: '_replace',
+    value: function _replace(obj, spec, replaced, path) {
+      var replacement = _lodash2.default.get(spec, path);
+
+      path = path.replace('._constructor.', '.constructor.');
+
+      var context = this.context(obj, path);
+      var name = _lodash2.default.last(path.split('.'));
+      var replacedPath = path.replace('.constructor.', '._constructor.');
+
+      if (!_lodash2.default.get(replaced, path)) {
+        _lodash2.default.set(replaced, replacedPath, _lodash2.default.get(obj, path));
+      }
+
+      context[name] = replacement;
+    }
+  }, {
     key: 'replace',
     value: function replace(obj, specs) {
       var _this2 = this;
@@ -59,23 +76,12 @@ var Mocker = function () {
       specs = _lodash2.default.isArray(specs) ? specs : [specs];
 
       _lodash2.default.forEach(specs, function (spec) {
-        var paths = _this2.paths(spec);
-
-        _lodash2.default.forEach(paths, function (path) {
-          var replacement = _lodash2.default.get(spec, path);
-
-          path = path.replace('._constructor.', '.constructor.');
-
-          var context = _this2.context(obj, path);
-          var name = _lodash2.default.last(path.split('.'));
-          var replacedPath = path.replace('.constructor.', '._constructor.');
-
-          if (!_lodash2.default.get(replaced, path)) {
-            _lodash2.default.set(replaced, replacedPath, _lodash2.default.get(obj, path));
-          }
-
-          context[name] = replacement;
+        var paths = _lodash2.default.partition(_this2.paths(spec), function (path) {
+          return path.indexOf('_constructor') === -1;
         });
+
+        _lodash2.default.forEach(paths[0], _this2._replace.bind(_this2, obj, spec, replaced));
+        _lodash2.default.forEach(paths[1], _this2._replace.bind(_this2, obj, spec, replaced));
       });
 
       this.restorer.replace = replaced;
@@ -139,6 +145,10 @@ var Mocker = function () {
     key: 'transform',
     value: function transform(obj, spec) {
       this.restorer = {};
+
+      if (obj[MockSymbol]) {
+        throw new Error('Unable to transform, this database is already mocked');
+      }
 
       if (spec.replace) {
         this.replace(obj, spec.replace);

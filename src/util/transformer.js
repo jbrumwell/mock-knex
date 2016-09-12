@@ -29,29 +29,35 @@ class Mocker {
     .value();
   }
 
+  _replace(obj, spec, replaced, path) {
+    let replacement = _.get(spec, path);
+
+    path = path.replace('._constructor.', '.constructor.');
+
+    const context = this.context(obj, path);
+    const name = _.last(path.split('.'));
+    const replacedPath = path.replace('.constructor.', '._constructor.');
+
+    if (! _.get(replaced, path)) {
+      _.set(replaced, replacedPath, _.get(obj, path));
+    }
+
+    context[name] = replacement;
+  }
+
   replace(obj, specs) {
     const replaced = {};
 
     specs = _.isArray(specs) ? specs : [specs];
 
     _.forEach(specs, (spec) => {
-      const paths = this.paths(spec);
-
-      _.forEach(paths, (path) => {
-        let replacement = _.get(spec, path);
-
-        path = path.replace('._constructor.', '.constructor.');
-
-        const context = this.context(obj, path);
-        const name = _.last(path.split('.'));
-        const replacedPath = path.replace('.constructor.', '._constructor.');
-
-        if (! _.get(replaced, path)) {
-          _.set(replaced, replacedPath, _.get(obj, path));
-        }
-
-        context[name] = replacement;
+      const paths = _.partition(this.paths(spec), (path) => {
+        return path.indexOf('_constructor') === -1;
       });
+
+      _.forEach(paths[0], this._replace.bind(this, obj, spec, replaced));
+      _.forEach(paths[1], this._replace.bind(this, obj, spec, replaced));
+
     });
 
     this.restorer.replace = replaced;
@@ -108,6 +114,10 @@ class Mocker {
 
   transform(obj, spec) {
     this.restorer = {};
+
+    if (obj[MockSymbol]) {
+      throw new Error('Unable to transform, this database is already mocked');
+    }
 
     if (spec.replace) {
       this.replace(obj, spec.replace);

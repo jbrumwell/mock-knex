@@ -4,6 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _lodash = require('lodash');
@@ -32,40 +34,38 @@ var Queries = function () {
     }
   }, {
     key: 'track',
-    value: function track(query, resolve, reject) {
-      var step = void 0;
-
+    value: function track(query, resolve, _reject) {
       if (this.tracker.tracking) {
-        query.response = function (response) {
-          var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+        query.mock = _extends({}, _lodash2.default.pick(query, ['method', 'sql', 'bindings', 'returning', 'transacting']), {
+          response: function response(_response) {
+            var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-          if (!options.stream) {
-            query.result = response;
-            resolve(query);
-          } else {
-            resolve({
-              response: response
-            });
+            if (!options.stream) {
+              query.result = _response;
+              resolve(query);
+            } else {
+              resolve({
+                response: _response
+              });
+            }
+          },
+          resolve: function resolve(result) {
+            return query.response(result);
+          },
+          reject: function reject(error) {
+            if (_lodash2.default.isString(error)) {
+              error = new Error(error);
+            }
+
+            _reject(error);
           }
-        };
-
-        query.resolve = function (result) {
-          return query.response(result);
-        };
-
-        query.reject = function (error) {
-          if (_lodash2.default.isString(error)) {
-            error = new Error(error);
-          }
-
-          reject(error);
-        };
+        });
 
         delete query.result;
 
-        step = this.queries.push(query);
+        query.mock.step = this.queries.push(query);
 
-        this.tracker.emit('query', query, step);
+        this.tracker.emit('query', query.mock, query.mock.step);
       } else {
         resolve();
       }

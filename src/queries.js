@@ -14,37 +14,45 @@ export default class Queries {
   }
 
   track(query, resolve, reject) {
-    let step;
-
     if (this.tracker.tracking) {
-      query.response = function(response, options = {}) {
-        if (! options.stream) {
-          query.result = response;
-          resolve(query);
-        } else {
-          resolve({
-            response,
-          });
-        }
-      };
+      query.mock = {
+        ..._.pick(query, [
+          'method',
+          'sql',
+          'bindings',
+          'returning',
+          'transacting',
+        ]),
 
-      query.resolve = function(result) {
-        return query.response(result);
-      };
+        response(response, options = {}) {
+          if (! options.stream) {
+            query.result = response;
+            resolve(query);
+          } else {
+            resolve({
+              response,
+            });
+          }
+        },
 
-      query.reject = function(error) {
-        if (_.isString(error)) {
-          error = new Error(error);
-        }
+        resolve(result) {
+          return query.response(result);
+        },
 
-        reject(error);
+        reject(error) {
+          if (_.isString(error)) {
+            error = new Error(error);
+          }
+
+          reject(error);
+        },
       };
 
       delete query.result;
 
-      step = this.queries.push(query);
+      query.mock.step = this.queries.push(query);
 
-      this.tracker.emit('query', query, step);
+      this.tracker.emit('query', query.mock, query.mock.step);
     } else {
       resolve();
     }

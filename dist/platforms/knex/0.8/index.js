@@ -69,7 +69,27 @@ var spec = exports.spec = {
     client: {
       _constructor: {
         prototype: {
-          _query: _query
+          _stream: function _stream(conn, sql, stream) {
+            var _this = this;
+
+            return new _bluebird2.default(function (resolver, rejecter) {
+              stream.on('error', rejecter);
+              stream.on('end', resolver);
+
+              return _this._query(conn, sql).then(function (obj) {
+                return obj.response;
+              }).map(function (row) {
+                stream.write(row);
+              }).catch(function (err) {
+                stream.emit('error', err);
+              }).then(function () {
+                stream.end();
+              });
+            });
+          },
+
+          _query: _query,
+          processResponse: processResponse
         }
       },
       driverName: 'mocked',

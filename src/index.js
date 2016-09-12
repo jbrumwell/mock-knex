@@ -3,6 +3,10 @@ import tracker from './tracker';
 import semver from 'semver';
 import path from 'path';
 
+import {
+  MockSymbol,
+} from './util/transformer';
+
 const platforms = [
   'knex',
 ];
@@ -82,6 +86,10 @@ class MockKnex {
     this._setAdapter(db);
 
     return this._adapter.unmock(db);
+  }
+
+  isMocked(db) {
+    return !! db[MockSymbol];
   }
 
   getAdapter() {

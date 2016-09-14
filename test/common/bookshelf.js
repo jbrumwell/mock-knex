@@ -82,7 +82,7 @@ export default (db) => {
              });
       });
 
-      it.only('should work with Model#fetch and relations', (done) => {
+      it('should work with Model#fetch and relations', (done) => {
         const results = [
           {
             id : 1,

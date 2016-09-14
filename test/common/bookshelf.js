@@ -17,14 +17,27 @@ export default (db) => {
   describe('Bookshelf', () => {
     let Model;
     let Collection;
+    let Relation;
 
     before((done) => {
       mod.mock(db);
 
       const bookshelf = Bookshelf(db);
 
+      Relation = bookshelf.Model.extend({
+        tableName : 'relation',
+
+        model() {
+          return this.hasOne(Model);
+        }
+      });
+
       Model = bookshelf.Model.extend({
-        tableName : 'models'
+        tableName : 'models',
+
+        relation() {
+          return this.hasOne(Relation);
+        }
       });
 
       Collection = bookshelf.Collection.extend({
@@ -67,6 +80,41 @@ export default (db) => {
                expect(model.get('foo')).to.equal('bar');
                done();
              });
+      });
+
+      it.only('should work with Model#fetch and relations', (done) => {
+        const results = [
+          {
+            id : 1,
+            foo : 'bar'
+          },
+
+          {
+            id : 2,
+            model_id : 1,
+          },
+        ];
+
+        tracker.on('query', (query, step) => {
+          query.response([
+            results[ step - 1 ]
+          ]);
+        });
+
+        Model.forge({ id : 1 }).fetch({
+          withRelated : [
+            'relation',
+          ],
+        })
+        .then((model) => {
+          expect(model).to.be.an.instanceof(Model);
+          expect(model.get('id')).to.equal(1);
+          expect(model.get('foo')).to.equal('bar');
+          expect(model.related('relation')).to.be.a('object');
+          expect(model.related('relation').get('model_id')).to.equal(1);
+          expect(model.related('relation').get('id')).to.equal(2);
+          done();
+        });
       });
 
       it('should work with Model#fetchAll', (done) => {

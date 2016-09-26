@@ -2,6 +2,7 @@ import fs from 'fs';
 import tracker from './tracker';
 import semver from 'semver';
 import path from 'path';
+import knexPackage from 'knex/package';
 
 import {
   MockSymbol,
@@ -10,6 +11,8 @@ import {
 const platforms = [
   'knex',
 ];
+
+const knexVersion = knexPackage.version;
 
 class MockKnex {
   adapter = null;
@@ -37,7 +40,7 @@ class MockKnex {
     return version;
   }
 
-  _setAdapter(db, platform = 'knex', version = db.VERSION) {
+  _setAdapter(db, platform = 'knex', version = knexVersion) {
     let versions = fs.readdirSync(path.join(__dirname, './platforms', platform));
 
     if (platforms.indexOf(platform) === -1) {

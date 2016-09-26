@@ -22,6 +22,10 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
+var _package = require('knex/package');
+
+var _package2 = _interopRequireDefault(_package);
+
 var _transformer = require('./util/transformer');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -29,6 +33,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var platforms = ['knex'];
+
+var knexVersion = _package2.default.version;
 
 var MockKnex = function () {
   function MockKnex() {
@@ -65,7 +71,7 @@ var MockKnex = function () {
     key: '_setAdapter',
     value: function _setAdapter(db) {
       var platform = arguments.length <= 1 || arguments[1] === undefined ? 'knex' : arguments[1];
-      var version = arguments.length <= 2 || arguments[2] === undefined ? db.VERSION : arguments[2];
+      var version = arguments.length <= 2 || arguments[2] === undefined ? knexVersion : arguments[2];
 
       var versions = _fs2.default.readdirSync(_path2.default.join(__dirname, './platforms', platform));
 

@@ -29,7 +29,7 @@
     "babel-preset-es2015": "^6.13.2",
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.14.0",
-    "bookshelf": "^0.9.0",
+    "bookshelf": "^0.10.0",
     "chai": "^3.5.0",
     "eslint": "^3.2.2",
     "lab": "11.0.1",
@@ -39,7 +39,7 @@
     "sqlite3": "^3.0.8"
   },
   "peerDependencies": {
-    "knex": "^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0"
+    "knex": "^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0"
   },
   "dependencies": {
     "bluebird": "^3.4.1",

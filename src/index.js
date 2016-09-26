@@ -8,10 +8,6 @@ import {
   MockSymbol,
 } from './util/transformer';
 
-import {
-  MockSymbol,
-} from './util/transformer';
-
 const platforms = [
   'knex',
 ];

@@ -4,8 +4,8 @@ import transformer from '../../../util/transformer';
 import Promise from 'bluebird';
 
 const connection = {
-  __knexUid: 'mockedConnection',
-  timeout: Promise.method(getConnection),
+  __knexUid : 'mockedConnection',
+  timeout : Promise.method(getConnection),
 };
 
 function getConnection() {
@@ -13,13 +13,13 @@ function getConnection() {
 }
 
 export const spec = _.defaultsDeep({
-  replace: [
+  replace : [
     {
-      client: {
+      client : {
         acquireConnection() {
           return {
-            completed: connection,
-            abort: _.noop,
+            completed : connection,
+            abort : _.noop,
           };
         },
       },
@@ -37,4 +37,4 @@ export default {
   unmock(db) {
     return transformer.restore(db);
   },
-}
+};

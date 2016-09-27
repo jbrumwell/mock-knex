@@ -21,6 +21,8 @@ test-suite:
 	make test
 	npm i knex@0.11
 	make test
+	npm i knex@0.12
+	make test
 
 debug:
 	BLUEBIRD_DEBUG=1 DEBUG=pool2 node-debug -p 8888 ${LAB} -m 0 -v -I __BluebirdErrorTypes__,Set,Intl,Map,__core-js_shared__,System,Observable,regeneratorRuntime,asap,core,_babelPolyfill ./test/init.js

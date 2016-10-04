@@ -84,7 +84,6 @@ module.exports = (db) => {
       tracker.install();
 
       tracker.once('query', (query) => {
-        console.log(query);
         expect(query).to.have.property('custom');
         expect(query.custom).to.be.a('boolean');
         done();

@@ -16,6 +16,7 @@ export default class Queries {
   track(query, resolve, reject) {
     if (this.tracker.tracking) {
       query.mock = {
+        ..._.get(query, 'mock', {}),
         ..._.pick(query, [
           'method',
           'sql',

@@ -79,6 +79,23 @@ module.exports = (db) => {
       db('users').select().then(_.noop);
     });
 
+    it('should allow passing custom attributes to query',
+    (done) => {
+      tracker.install();
+
+      tracker.once('query', (query) => {
+        expect(query).to.have.property('custom');
+        expect(query.custom).to.be.a('boolean');
+        done();
+      });
+
+      tracker.queries.track({
+        mock : {
+          custom : true,
+        },
+      })
+    });
+
     it('should return a query object with a method property',
     (done) => {
       tracker.once('query', (query) => {

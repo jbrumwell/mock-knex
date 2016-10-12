@@ -38,7 +38,10 @@ var spec = exports.spec = _lodash2.default.defaultsDeep({
       acquireConnection: function acquireConnection() {
         return {
           completed: connection,
-          abort: _lodash2.default.noop
+          abort: _lodash2.default.noop,
+          then: function then(cb) {
+            cb(connection);
+          }
         };
       }
     }

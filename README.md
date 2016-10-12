@@ -123,7 +123,7 @@ tracker.on('query', function sendResult(query, step) {
 
 ### More Examples?
 
-Checkout the [Tests](./test/tracker.spec.js)
+Checkout the [Tests](./test/common/tracker.js)
 
 ## API
 
@@ -166,7 +166,7 @@ Checkout the [Tests](./test/tracker.spec.js)
 
 ### Tracker
 
-The tracker enables you to catch and respond to queries that occur during testing, see [Test](test/tracker.spec.js) for more
+The tracker enables you to catch and respond to queries that occur during testing, see [Test](./test/common/tracker.js) for more
 examples.
 
 <table>

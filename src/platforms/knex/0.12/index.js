@@ -20,6 +20,9 @@ export const spec = _.defaultsDeep({
           return {
             completed : connection,
             abort : _.noop,
+            then : function(cb) {
+              cb(connection);
+            },
           };
         },
       },

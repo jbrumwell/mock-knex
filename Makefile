@@ -1,8 +1,9 @@
 ESLINT = node_modules/.bin/eslint
 LAB = ./node_modules/lab/bin/lab
 BABEL = ./node_modules/.bin/babel
+KNEX_VERSIONS = 0.8 0.9 0.10 0.11 0.12
 
-.PHONY: clean test lint lint-quiet watch build test-debug
+.PHONY: clean test lint lint-quiet watch build test-debug $(KNEX_VERSIONS)
 
 default: build
 
@@ -12,16 +13,10 @@ clean:
 test:
 	${LAB} -v -I __BluebirdErrorTypes__,Set,Intl,Map,__core-js_shared__,System,Observable,regeneratorRuntime,asap,core,_babelPolyfill ./test/init.js
 
-test-suite:
-	npm i knex@0.8
-	make test
-	npm i knex@0.9
-	make test
-	npm i knex@0.10
-	make test
-	npm i knex@0.11
-	make test
-	npm i knex@0.12
+test-suite: $(KNEX_VERSIONS)
+
+$(KNEX_VERSIONS):
+	npm i knex@$@
 	make test
 
 debug:

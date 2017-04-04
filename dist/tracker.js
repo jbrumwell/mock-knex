@@ -26,7 +26,7 @@ var Tracker = function (_EventEmitter) {
   function Tracker() {
     _classCallCheck(this, Tracker);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Tracker).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (Tracker.__proto__ || Object.getPrototypeOf(Tracker)).apply(this, arguments));
 
     _this.tracking = false;
 

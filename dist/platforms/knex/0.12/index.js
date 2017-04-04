@@ -36,19 +36,12 @@ var spec = exports.spec = _lodash2.default.defaultsDeep({
   replace: [{
     client: {
       acquireConnection: function acquireConnection() {
-        return {
-          completed: connection,
-          abort: _lodash2.default.noop,
-          then: function then(cb) {
-            cb(connection);
-          }
-        };
+        return _bluebird2.default.resolve(connection);
       }
     }
   }]
 }, _index.spec);
 
-exports.default = _index2.default;
 exports.default = {
   mock: function mock(db) {
     return _transformer2.default.transform(db, spec);

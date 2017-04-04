@@ -17,13 +17,7 @@ export const spec = _.defaultsDeep({
     {
       client : {
         acquireConnection() {
-          return {
-            completed : connection,
-            abort : _.noop,
-            then : function(cb) {
-              cb(connection);
-            },
-          };
+          return Promise.resolve(connection);
         },
       },
     },

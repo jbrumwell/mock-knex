@@ -1,7 +1,7 @@
 ESLINT = node_modules/.bin/eslint
 LAB = ./node_modules/lab/bin/lab
 BABEL = ./node_modules/.bin/babel
-KNEX_VERSIONS = 0.8 0.9 0.10 0.11 0.12
+KNEX_VERSIONS = 0.8 0.9 0.10 0.11 0.12 0.13
 
 .PHONY: clean test lint lint-quiet watch build test-debug $(KNEX_VERSIONS)
 

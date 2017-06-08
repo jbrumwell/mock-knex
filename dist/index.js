@@ -70,8 +70,8 @@ var MockKnex = function () {
   }, {
     key: '_setAdapter',
     value: function _setAdapter(db) {
-      var platform = arguments.length <= 1 || arguments[1] === undefined ? 'knex' : arguments[1];
-      var version = arguments.length <= 2 || arguments[2] === undefined ? knexVersion : arguments[2];
+      var platform = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'knex';
+      var version = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : knexVersion;
 
       var versions = _fs2.default.readdirSync(_path2.default.join(__dirname, './platforms', platform));
 

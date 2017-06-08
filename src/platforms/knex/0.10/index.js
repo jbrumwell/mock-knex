@@ -1,5 +1,3 @@
-import client, { spec as definition } from '../0.8/index';
-
-export const spec = definition;
+import client from '../0.8/index';
 
 export default client;

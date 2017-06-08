@@ -87,12 +87,16 @@ export let spec = {
   define : defineConnection(connection),
 };
 
-export default {
-  mock(db) {
-    return transformer.transform(db, spec);
-  },
+export function makeClient(spec) {
+  return {
+    mock(db) {
+      return transformer.transform(db, spec);
+    },
 
-  unmock(db) {
-    return transformer.restore(db);
-  },
+    unmock(db) {
+      return transformer.restore(db);
+    },
+  };
 };
+
+export default makeClient(spec);

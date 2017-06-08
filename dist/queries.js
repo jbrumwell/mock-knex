@@ -38,7 +38,7 @@ var Queries = function () {
       if (this.tracker.tracking) {
         query.mock = _extends({}, _lodash2.default.get(query, 'mock', {}), _lodash2.default.pick(query, ['method', 'sql', 'bindings', 'returning', 'transacting']), {
           response: function response(_response) {
-            var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+            var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
             if (!options.stream) {
               query.result = _response;

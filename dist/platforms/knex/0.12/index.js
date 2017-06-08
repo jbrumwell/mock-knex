@@ -7,15 +7,11 @@ exports.spec = undefined;
 
 var _index = require('../0.11/index');
 
-var _index2 = _interopRequireDefault(_index);
+var _index2 = require('../0.8/index');
 
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
-
-var _transformer = require('../../../util/transformer');
-
-var _transformer2 = _interopRequireDefault(_transformer);
 
 var _bluebird = require('bluebird');
 
@@ -42,11 +38,4 @@ var spec = exports.spec = _lodash2.default.defaultsDeep({
   }]
 }, _index.spec);
 
-exports.default = {
-  mock: function mock(db) {
-    return _transformer2.default.transform(db, spec);
-  },
-  unmock: function unmock(db) {
-    return _transformer2.default.restore(db);
-  }
-};
+exports.default = (0, _index2.makeClient)(spec);

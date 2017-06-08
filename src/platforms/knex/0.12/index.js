@@ -1,6 +1,12 @@
-import client, { spec as definition } from '../0.11/index';
+import {
+  spec as definition,
+} from '../0.11/index';
+
+import {
+  makeClient,
+} from '../0.8/index';
+
 import _ from 'lodash';
-import transformer from '../../../util/transformer';
 import Promise from 'bluebird';
 
 const connection = {
@@ -24,12 +30,4 @@ export const spec = _.defaultsDeep({
   ],
 }, definition);
 
-export default {
-  mock(db) {
-    return transformer.transform(db, spec);
-  },
-
-  unmock(db) {
-    return transformer.restore(db);
-  },
-};
+export default makeClient(spec);

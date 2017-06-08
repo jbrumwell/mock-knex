@@ -5,6 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.spec = undefined;
 exports.defineConnection = defineConnection;
+exports.makeClient = makeClient;
 
 var _bluebird = require('bluebird');
 
@@ -114,11 +115,15 @@ var spec = exports.spec = {
   define: defineConnection(connection)
 };
 
-exports.default = {
-  mock: function mock(db) {
-    return _transformer2.default.transform(db, spec);
-  },
-  unmock: function unmock(db) {
-    return _transformer2.default.restore(db);
-  }
+function makeClient(spec) {
+  return {
+    mock: function mock(db) {
+      return _transformer2.default.transform(db, spec);
+    },
+    unmock: function unmock(db) {
+      return _transformer2.default.restore(db);
+    }
+  };
 };
+
+exports.default = makeClient(spec);

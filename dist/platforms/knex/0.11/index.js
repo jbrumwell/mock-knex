@@ -11,10 +11,6 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _transformer = require('../../../util/transformer');
-
-var _transformer2 = _interopRequireDefault(_transformer);
-
 var _bluebird = require('bluebird');
 
 var _bluebird2 = _interopRequireDefault(_bluebird);
@@ -48,11 +44,4 @@ var spec = exports.spec = _lodash2.default.defaultsDeep({
   define: (0, _index.defineConnection)(connection)
 }, _index.spec);
 
-exports.default = {
-  mock: function mock(db) {
-    return _transformer2.default.transform(db, spec);
-  },
-  unmock: function unmock(db) {
-    return _transformer2.default.restore(db);
-  }
-};
+exports.default = (0, _index.makeClient)(spec);

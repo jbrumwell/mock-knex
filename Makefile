@@ -1,7 +1,7 @@
 ESLINT = node_modules/.bin/eslint
 LAB = ./node_modules/lab/bin/lab
 BABEL = ./node_modules/.bin/babel
-KNEX_VERSIONS = 0.8 0.9 0.10 0.11 0.12 0.13
+KNEX_VERSIONS = 0.8 0.9 0.10 0.11 0.12 0.13 0.14
 
 .PHONY: clean test lint lint-quiet watch build test-debug $(KNEX_VERSIONS)
 
@@ -11,7 +11,7 @@ clean:
 	-rm -rf ./dist
 
 test:
-	${LAB} -v -I __BluebirdErrorTypes__,Set,Intl,Map,__core-js_shared__,System,Observable,regeneratorRuntime,asap,core,_babelPolyfill ./test/init.js
+	${LAB} ./test/init.js
 
 test-suite: $(KNEX_VERSIONS)
 
@@ -20,7 +20,7 @@ $(KNEX_VERSIONS):
 	make test
 
 debug:
-	BLUEBIRD_DEBUG=1 DEBUG=pool2 node-debug -p 8888 ${LAB} -m 0 -v -I __BluebirdErrorTypes__,Set,Intl,Map,__core-js_shared__,System,Observable,regeneratorRuntime,asap,core,_babelPolyfill ./test/init.js
+	BLUEBIRD_DEBUG=1 DEBUG=pool2 node-debug -p 8888 ${LAB} -m 0 ./test/init.js
 
 lint:
 	$(ESLINT) --ext .js --ext .jsx .

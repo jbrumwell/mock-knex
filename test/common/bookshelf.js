@@ -143,11 +143,11 @@ export default (db) => {
 
       it('should work with Model#count', (done) => {
         tracker.on('query', (query) => {
-          try {
-            expect(query.sql).to.equal('select count("count") as "count" from "models" where "color" = ?');
-          } catch (e) {
-            expect(query.sql).to.equal('select count(`count`) as `count` from `models` where `color` = ?');
-          }
+          expect([
+            'select count("count") as "count" from "models" where "color" = $1',
+            'select count("count") as "count" from "models" where "color" = ?',
+            'select count(`count`) as `count` from `models` where `color` = ?',
+          ]).to.contain(query.sql);
 
           expect(query.method).to.equal('select');
 

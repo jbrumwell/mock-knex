@@ -15,11 +15,12 @@ export default (db) => {
   it('should support schema#hasTable', (done) => {
     tracker.on('query', (query) => {
       expect(query.sql).to.be.a('string');
-      try {
-        expect(query.sql).to.equal('select * from information_schema.tables where table_name = ? and table_schema = current_schema');
-      } catch (e) {
-        expect(query.sql).to.equal('select * from information_schema.tables where table_name = ?');
-      }
+
+      expect([
+        'select * from information_schema.tables where table_name = ? and table_schema = current_schema',
+        'select * from information_schema.tables where table_name = ?',
+        'select * from information_schema.tables where table_name = $1 and table_schema = current_schema',
+      ]).to.contain(query.sql);
 
       done();
     });

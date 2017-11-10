@@ -115,10 +115,10 @@ var spec = exports.spec = {
   define: defineConnection(connection)
 };
 
-function makeClient(spec) {
+function makeClient(def) {
   return {
     mock: function mock(db) {
-      return _transformer2.default.transform(db, spec);
+      return _transformer2.default.transform(db, def);
     },
     unmock: function unmock(db) {
       return _transformer2.default.restore(db);

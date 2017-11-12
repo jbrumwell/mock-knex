@@ -1,6 +1,8 @@
 mock-knex
 =========
 
+[![Gitter chat](https://badges.gitter.im/colonyamerican/mock-knex.svg)](https://gitter.im/colonyamerican/mock-knex "Gitter chat")
+
 A mock knex adapter for simulating a database during testing, especially useful when used in combination
 with [fixture-factory](http://github.com/colonyamerican/fixture-factory).
 

@@ -2,7 +2,7 @@ import fs from 'fs';
 import tracker from './tracker';
 import semver from 'semver';
 import path from 'path';
-import knexPackage from 'knex/package';
+import knexPackage from 'knex/package.json';
 
 import {
   MockSymbol,

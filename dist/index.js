@@ -52,13 +52,7 @@ var MockKnex = function () {
       }
 
       var extracted = versions.some(function (v) {
-        var found = 0;
-
-        if (_semver2.default.satisfies(version, '^' + v)) {
-          found = version = v;
-        }
-
-        return found > 0;
+        return _semver2.default.satisfies(version, '^' + v);
       });
 
       if (!extracted) {

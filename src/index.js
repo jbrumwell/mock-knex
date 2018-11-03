@@ -23,15 +23,7 @@ class MockKnex {
       version += '.0';
     }
 
-    const extracted = versions.some((v) => {
-      let found = 0;
-
-      if (semver.satisfies(version, '^' + v)) {
-        found = version = v;
-      }
-
-      return found > 0;
-    });
+    const extracted = versions.some(v => semver.satisfies(version, '^' + v));
 
     if (! extracted) {
       throw new Error('Unable to locate version: ' + version);

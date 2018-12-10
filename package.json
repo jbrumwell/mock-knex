@@ -43,7 +43,6 @@
   },
   "dependencies": {
     "bluebird": "^3.4.1",
-    "knex": "^0.8.6",
     "lodash": "^4.14.2",
     "semver": "^5.3.0"
   }

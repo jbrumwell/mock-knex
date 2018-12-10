@@ -6,7 +6,7 @@ with [fixture-factory](http://github.com/colonyamerican/fixture-factory).
 
 ## Knex Support
 
-Currently supports knex 0.8 through 0.15
+Currently supports knex 0.8 through 0.16
 
 ## Installation
 
@@ -276,7 +276,7 @@ The object containing query details that is being sent to knex database dialect 
       <td><b>response(values, options)</b></td>
       <td>
         <dl>
-          <dt>values</dt>
+          <dt>values</dt || ^0.16.0>
           <dd>
             An array of mock data to be returned by database. For Bookshelf this is mostly array of objects. Knex could return any type of data.
           </dd>

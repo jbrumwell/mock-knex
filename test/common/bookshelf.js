@@ -14,7 +14,7 @@ import tracker from '../../dist/tracker';
 import { MockSymbol } from '../../dist/util/transformer';
 
 export default (db) => {
-  describe('Bookshelf', () => {
+  describe.skip('Bookshelf', () => {
     let Model;
     let Collection;
     let Relation;

@@ -20,7 +20,7 @@ $(KNEX_VERSIONS):
 	make test
 
 debug:
-	BLUEBIRD_DEBUG=1 DEBUG=pool2 node-debug -p 8888 ${LAB} -m 0 ./test/init.js
+	BLUEBIRD_DEBUG=1 DEBUG=pool2 node --inspect-brk ${LAB} ./test/init.js
 
 lint:
 	$(ESLINT) --ext .js --ext .jsx .

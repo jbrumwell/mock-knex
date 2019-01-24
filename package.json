@@ -1,6 +1,6 @@
 {
   "name": "mock-knex",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "a knex mock adapter for simulating a db during testing",
   "main": "index.js",
   "scripts": {
@@ -43,7 +43,6 @@
   },
   "dependencies": {
     "bluebird": "^3.4.1",
-    "knex": "^0.16.2",
     "lodash": "^4.14.2",
     "semver": "^5.3.0"
   }

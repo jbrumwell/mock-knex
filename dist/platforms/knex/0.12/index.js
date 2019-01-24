@@ -33,7 +33,8 @@ var spec = exports.spec = _lodash2.default.defaultsDeep({
     client: {
       acquireConnection: function acquireConnection() {
         return _bluebird2.default.resolve(connection);
-      }
+      },
+      destroyRawConnection: function destroyRawConnection(conn) {}
     }
   }]
 }, _index.spec);

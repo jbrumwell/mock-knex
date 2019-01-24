@@ -25,6 +25,7 @@ export const spec = _.defaultsDeep({
         acquireConnection() {
           return Promise.resolve(connection);
         },
+        destroyRawConnection(conn) {},
       },
     },
   ],

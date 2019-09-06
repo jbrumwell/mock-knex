@@ -225,5 +225,17 @@ module.exports = (db) => {
         done();
       });
     });
+
+    it('query#reject error instance', (done) => {
+      tracker.on('query', (query) => {
+        query.reject(new Error('i threw up'));
+      });
+
+      db.select('field').from('test-table').catch((error) => {
+        expect(error.message).to.be.a('string');
+        expect(error.message.indexOf('i threw up')).to.not.equal(-1);
+        done();
+      });
+    });
   });
 }

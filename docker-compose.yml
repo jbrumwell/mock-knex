@@ -19,3 +19,11 @@ services:
       POSTGRES_PASSWORD: mockKnex
       POSTGRES_USER: mockKnex
       POSTGRES_DB: mockKnex
+  mssql:
+    image: microsoft/mssql-server-linux:latest
+    restart: always
+    ports:
+    - "5433:5433"
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: mockKnex

@@ -12,6 +12,19 @@ import Promise from 'bluebird';
 const connection = {
   __knexUid : 'mockedConnection',
   timeout : Promise.method(getConnection),
+  transaction : () => {
+    return {
+      begin : () => {
+        return Promise.resolve();
+      },
+      rollback : () => {
+        return Promise.resolve();
+      },
+      commit : () => {
+        return Promise.resolve();
+      },
+    };
+  },
 };
 
 function getConnection() {

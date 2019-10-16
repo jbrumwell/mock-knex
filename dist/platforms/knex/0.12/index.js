@@ -21,7 +21,20 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var connection = {
   __knexUid: 'mockedConnection',
-  timeout: _bluebird2.default.method(getConnection)
+  timeout: _bluebird2.default.method(getConnection),
+  transaction: function transaction() {
+    return {
+      begin: function begin() {
+        return _bluebird2.default.resolve();
+      },
+      rollback: function rollback() {
+        return _bluebird2.default.resolve();
+      },
+      commit: function commit() {
+        return _bluebird2.default.resolve();
+      }
+    };
+  }
 };
 
 function getConnection() {

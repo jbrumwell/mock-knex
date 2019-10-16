@@ -18,7 +18,20 @@ var _bluebird2 = _interopRequireDefault(_bluebird);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var connection = {
-  id: 'mockedConnection'
+  id: 'mockedConnection',
+  transaction: function transaction() {
+    return {
+      begin: function begin() {
+        return _bluebird2.default.resolve();
+      },
+      rollback: function rollback() {
+        return _bluebird2.default.resolve();
+      },
+      commit: function commit() {
+        return _bluebird2.default.resolve();
+      }
+    };
+  }
 };
 
 var spec = exports.spec = _lodash2.default.defaultsDeep({

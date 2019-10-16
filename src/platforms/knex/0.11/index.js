@@ -8,6 +8,19 @@ import Promise from 'bluebird';
 
 const connection = {
   id : 'mockedConnection',
+  transaction : () => {
+    return {
+      begin : () => {
+        return Promise.resolve();
+      },
+      rollback : () => {
+        return Promise.resolve();
+      },
+      commit : () => {
+        return Promise.resolve();
+      },
+    };
+  },
 };
 
 export const spec = _.defaultsDeep({

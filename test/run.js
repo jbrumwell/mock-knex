@@ -13,7 +13,7 @@ import mssql from './mssql';
 import pkg from '../package.json';
 
 const currentKnexVersion = pkg.dependencies.knex.split('.')[1];
-const knexVersionsWithNoMSSQL = [ '8', '9', '10', '15' ];
+const knexVersionsWithNoMSSQL = [ '8', '9', '10' ];
 
 const engines = [
   sqlite,

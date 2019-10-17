@@ -34,7 +34,7 @@
     "eslint": "^3.2.2",
     "lab": "11.0.1",
     "mysql": "^2.11.1",
-    "mssql": "^5.1.0",
+    "mssql": "4.1.0",
     "pg": "^6.1.0",
     "pg-query-stream": "^1.0.0",
     "sqlite3": "^3.0.8"
@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "bluebird": "^3.4.1",
+    "knex": "^0.19.5",
     "lodash": "^4.14.2",
     "semver": "^5.3.0"
   }

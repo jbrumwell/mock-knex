@@ -61,7 +61,7 @@ var Mocker = function () {
       var replacedPath = path.replace('.constructor.', '._constructor.');
 
       if (!_lodash2.default.get(replaced, path)) {
-        _lodash2.default.set(replaced, replacedPath, _lodash2.default.get(obj, path));
+        replaced[replacedPath] = _lodash2.default.get(obj, path);
       }
 
       context[name] = replacement;

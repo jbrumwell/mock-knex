@@ -39,7 +39,7 @@ class Mocker {
     const replacedPath = path.replace('.constructor.', '._constructor.');
 
     if (! _.get(replaced, path)) {
-      _.set(replaced, replacedPath, _.get(obj, path));
+      replaced[replacedPath] = _.get(obj, path);
     }
 
     context[name] = replacement;

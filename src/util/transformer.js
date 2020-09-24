@@ -39,10 +39,24 @@ class Mocker {
     const replacedPath = path.replace('.constructor.', '._constructor.');
 
     if (! _.get(replaced, path)) {
-      replaced[replacedPath] = _.get(obj, path);
+      this.set(replaced, replacedPath, _.get(obj, path));
     }
 
     context[name] = replacement;
+  }
+
+  set(obj, path, value) {
+    const pathKeys = path.split('.');
+    const indexOfLastKey = pathKeys.length - 1;
+    for (let i = 0; i < indexOfLastKey; ++ i) {
+      const key = pathKeys[i];
+      if (!(key in obj)) {
+        obj[key] = {};
+      }
+
+      obj = obj[key];
+    }
+    obj[pathKeys[indexOfLastKey]] = value;
   }
 
   replace(obj, specs) {
@@ -98,7 +112,7 @@ class Mocker {
         const property = path.split('.').pop();
 
         if (! _.get(defined, path)) {
-          _.set(defined, path, _.get(obj, path));
+          this.set(defined, path, _.get(obj, path));
         }
 
         descriptors.configurable = true;

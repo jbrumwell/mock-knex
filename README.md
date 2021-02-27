@@ -208,7 +208,7 @@ examples.
         </dl>
       </td>
       <td>-</td>
-      <td>Add event listener for 'query' event. It gets esecuted for each query that should end up in database. Instead of this callback gets executed and its up to you to assert queries and mock database responses.</td>
+      <td>Add event listener for 'query' event. It gets executed for each query that should end up in database. Instead of this callback gets executed and its up to you to assert queries and mock database responses.</td>
     </tr>
   </tbody>
 </table>

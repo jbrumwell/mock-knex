@@ -61,10 +61,25 @@ var Mocker = function () {
       var replacedPath = path.replace('.constructor.', '._constructor.');
 
       if (!_lodash2.default.get(replaced, path)) {
-        _lodash2.default.set(replaced, replacedPath, _lodash2.default.get(obj, path));
+        this.set(replaced, replacedPath, _lodash2.default.get(obj, path));
       }
 
       context[name] = replacement;
+    }
+  }, {
+    key: 'set',
+    value: function set(obj, path, value) {
+      var pathKeys = path.split('.');
+      var indexOfLastKey = pathKeys.length - 1;
+      for (var i = 0; i < indexOfLastKey; ++i) {
+        var key = pathKeys[i];
+        if (!(key in obj)) {
+          obj[key] = {};
+        }
+
+        obj = obj[key];
+      }
+      obj[pathKeys[indexOfLastKey]] = value;
     }
   }, {
     key: 'replace',
@@ -128,7 +143,7 @@ var Mocker = function () {
           var property = path.split('.').pop();
 
           if (!_lodash2.default.get(defined, path)) {
-            _lodash2.default.set(defined, path, _lodash2.default.get(obj, path));
+            _this4.set(defined, path, _lodash2.default.get(obj, path));
           }
 
           descriptors.configurable = true;

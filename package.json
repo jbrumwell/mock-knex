@@ -39,7 +39,7 @@
     "sqlite3": "^3.0.8"
   },
   "peerDependencies": {
-    "knex": "> 0.8 < 0.96"
+    "knex": "> 0.8 < 1.1"
   },
   "dependencies": {
     "bluebird": "^3.4.1",

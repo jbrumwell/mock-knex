@@ -1,49 +1,49 @@
 {
-  "name": "mock-knex",
-  "version": "0.4.9",
-  "description": "a knex mock adapter for simulating a db during testing",
-  "main": "index.js",
-  "scripts": {
-    "test": "./node_modules/lab/bin/lab -v -I __BluebirdErrorTypes__,Set,Intl,Map"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/colonyamerican/mock-knex.git"
-  },
-  "keywords": [
-    "knex",
-    "mock",
-    "bookshelf"
-  ],
-  "author": "Jason Brumwell",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/colonyamerican/mock-knex/issues"
-  },
-  "homepage": "https://github.com/colonyamerican/mock-knex",
-  "devDependencies": {
-    "babel": "^6.5.2",
-    "babel-cli": "^6.11.4",
-    "babel-eslint": "^6.1.2",
-    "babel-polyfill": "^6.13.0",
-    "babel-preset-es2015": "^6.13.2",
-    "babel-preset-stage-0": "^6.5.0",
-    "babel-register": "^6.14.0",
-    "bookshelf": "^0.10.0",
-    "chai": "^3.5.0",
-    "eslint": "^3.2.2",
-    "lab": "11.0.1",
-    "mysql": "^2.11.1",
-    "pg": "^6.1.0",
-    "pg-query-stream": "^1.0.0",
-    "sqlite3": "^3.0.8"
-  },
-  "peerDependencies": {
-    "knex": "> 0.8 <= 2.0"
-  },
-  "dependencies": {
-    "bluebird": "^3.4.1",
-    "lodash": "^4.14.2",
-    "semver": "^5.3.0"
-  }
+    "name": "mock-knex",
+    "version": "0.4.9",
+    "description": "a knex mock adapter for simulating a db during testing",
+    "main": "index.js",
+    "scripts": {
+        "test": "./node_modules/lab/bin/lab -v -I __BluebirdErrorTypes__,Set,Intl,Map"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/colonyamerican/mock-knex.git"
+    },
+    "keywords": [
+        "knex",
+        "mock",
+        "bookshelf"
+    ],
+    "author": "Jason Brumwell",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/colonyamerican/mock-knex/issues"
+    },
+    "homepage": "https://github.com/colonyamerican/mock-knex",
+    "devDependencies": {
+        "babel": "^6.5.2",
+        "babel-cli": "^6.11.4",
+        "babel-eslint": "^6.1.2",
+        "babel-polyfill": "^6.13.0",
+        "babel-preset-es2015": "^6.13.2",
+        "babel-preset-stage-0": "^6.5.0",
+        "babel-register": "^6.14.0",
+        "bookshelf": "^0.10.0",
+        "chai": "^3.5.0",
+        "eslint": "^3.2.2",
+        "lab": "11.0.1",
+        "mysql": "^2.11.1",
+        "pg": "^6.1.0",
+        "pg-query-stream": "^1.0.0",
+        "sqlite3": "^5.0.8"
+    },
+    "peerDependencies": {
+        "knex": "> 0.8 <= 2.0"
+    },
+    "dependencies": {
+        "bluebird": "^3.4.1",
+        "lodash": "^4.14.2",
+        "semver": "^5.3.0"
+    }
 }

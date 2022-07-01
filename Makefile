@@ -32,4 +32,5 @@ watch:
 	babel src --out-dir=dist --watch
 
 build:
+    make clean
 	babel src --out-dir=dist

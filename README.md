@@ -6,7 +6,7 @@ with [fixture-factory](http://github.com/colonyamerican/fixture-factory).
 
 ## Knex Support
 
-Currently supports knex 0.8 through 2.0
+Currently supports knex 0.8 through 2.1
 
 ## Installation
 

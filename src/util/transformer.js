@@ -32,11 +32,12 @@ class Mocker {
   _replace(obj, spec, replaced, path) {
     let replacement = _.get(spec, path);
 
-    path = path.replace('._constructor.', '.constructor.');
+    path = path.replace('._constructor.', '.constructor.').replace('._prototype.', '.prototype.');
 
     const context = this.context(obj, path);
     const name = _.last(path.split('.'));
-    const replacedPath = path.replace('.constructor.', '._constructor.');
+    const replacedPath = path.replace('.constructor.', '._constructor.').replace('.prototype.', '._prototype.');
+    
 
     if (! _.get(replaced, path)) {
       _.set(replaced, replacedPath, _.get(obj, path));

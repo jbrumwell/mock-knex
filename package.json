@@ -36,15 +36,13 @@
         "mysql": "^2.11.1",
         "pg": "^6.1.0",
         "pg-query-stream": "^1.0.0",
-        "sqlite3": "^5.1.6"
+        "sqlite3": "^5.0.8"
     },
     "peerDependencies": {
         "knex": "> 0.8"
     },
     "dependencies": {
-        "@vscode/sqlite3": "^5.1.6-vscode",
         "bluebird": "^3.4.1",
-        "knex": "^0.9.0",
         "lodash": "^4.14.2",
         "semver": "^7.5.4"
     }

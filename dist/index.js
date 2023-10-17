@@ -22,7 +22,7 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
-var _package = require('knex/package.json');
+var _package = require('@beacon/knex/package.json');
 
 var _package2 = _interopRequireDefault(_package);
 

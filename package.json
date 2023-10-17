@@ -1,5 +1,5 @@
 {
-    "name": "mock-knex",
+    "name": "@beacon/mock-knex",
     "version": "0.4.12",
     "description": "a knex mock adapter for simulating a db during testing",
     "main": "index.js",

@@ -5,7 +5,7 @@ with [fixture-factory](http://github.com/colonyamerican/fixture-factory).
 
 ## Knex Support
 
-Currently tested on knex 0.8 through 3.0, should operate on any version of knex but may have issues with untested releases. Please file an issue if you come across any issues.
+Currently tested on knex 0.8 through 3.1, should operate on any version of knex but may have issues with untested releases. Please file an issue if you come across any issues.
 
 ## Installation
 

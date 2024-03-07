@@ -1,6 +1,7 @@
 ESLINT = node_modules/.bin/eslint
 LAB = ./node_modules/lab/bin/lab
-KNEX_VERSIONS = 0.8 0.9 0.10 0.11 0.12 0.13 0.14 0.15 0.16 0.17 0.18 0.19 0.20 0.21 0.95 1.0 2.0 2.1
+BABEL = ./node_modules/.bin/babel
+KNEX_VERSIONS = 0.8 0.9 0.10 0.11 0.12 0.13 0.14 0.15 0.16 0.17 0.18 0.19 0.20 0.21 0.95 1.0 2.0 3.0 latest
 
 .PHONY: clean test lint lint-quiet watch build test-debug $(KNEX_VERSIONS)
 
@@ -16,6 +17,8 @@ test-suite: $(KNEX_VERSIONS)
 
 $(KNEX_VERSIONS):
 	-npm i knex@$@
+	-npm install sqlite3 --dev
+	-npm install @vscode/sqlite3 --dev
 	make test
 
 debug:
